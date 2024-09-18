@@ -9,9 +9,9 @@ export default function Modules() {
           <button id="viewProgress" type="button">
                       View Progess
           </button>
-          <button id="publishedAll" type="button">
-                      Published All
-          </button>
+          <select id="publishedAll">
+            <option>Published All</option>
+          </select>
           <button id="+ Module" type="button">
                       + Module
           </button>

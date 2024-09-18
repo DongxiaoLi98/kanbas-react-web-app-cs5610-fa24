@@ -3,13 +3,13 @@ export default function AssignmentEditor() {
       <div id="wd-assignments-editor">
         <label htmlFor="wd-name">Assignment Name</label>
         <input id="wd-name" value="A1 - ENV + HTML" /><br /><br />
-        <textarea id="wd-description">
-          The assignment is available online Submit a link to the landing page of
+        <textarea id="wd-description" cols={50} rows={6}>
+          The assignment is available online Submit a link to the landing page of your Web application, running on Netlify.
         </textarea>
         <br />
         <table>
         <tr>
-          <td align="right" valign="top">
+          <td align="right">
             <label htmlFor="wd-points">Points</label>
           </td>
           <td>
@@ -19,7 +19,7 @@ export default function AssignmentEditor() {
         {/* Complete on your own */}
         <br />
         <tr>
-          <td>
+          <td align="right">
             <label htmlFor="wd-group">Assignment Group</label>
           </td>
           <td>
@@ -33,7 +33,7 @@ export default function AssignmentEditor() {
 
         <br />
         <tr>
-          <td>
+          <td align="right">
             <label htmlFor="wd-display-grade-as">Display Grade as</label>
           </td>
           <td>
@@ -47,7 +47,7 @@ export default function AssignmentEditor() {
 
         <br />
         <tr>
-          <td>
+          <td align="right">
             <label htmlFor="wd-submission-type">Submission Type</label>
           </td>
           <td>
@@ -61,6 +61,7 @@ export default function AssignmentEditor() {
 
         <br />
         <tr>
+          <td></td>
           <td>
             <label>Online Entry Options</label><br />
             <input type="checkbox" id="wd-text-entry"/>
@@ -82,14 +83,20 @@ export default function AssignmentEditor() {
 
         <br />
         <tr>
+          <td align="right">Assign</td>
           <td>
-            <label htmlFor="wd-assign-to">Assign Assign to</label><br />
+            <label htmlFor="wd-assign-to">Assign to</label><br /></td>
+        </tr>
+        <tr>
+        <td></td>
+          <td>
             <input id="wd-assign-to" value={"Everyone"} />
           </td>
         </tr>
 
         <br />
         <tr>
+          <td align="right"></td>
           <td>
             <label htmlFor="wd-due-date">Due</label><br />
             <input type="date"
@@ -97,26 +104,33 @@ export default function AssignmentEditor() {
                             value="2024-05-13"/><br />
           </td>
         </tr>
-
         <br />
         <tr>
-          <td><label htmlFor="wd-available-from">Avaliable From</label> </td>
-        <td> <label htmlFor="wd-available-untile">Due</label></td><br />
+          <td></td>
+          <td align="left"><label htmlFor="wd-available-from">Avaliable From</label></td>
+        <td align="left"><label htmlFor="wd-available-untile">Until</label></td><br />
         </tr>
         <tr>
-        
-        <td>
+          <td></td>
+        <td align="left">
             <input type="date"
                             id="wd-available-from"
                             value="2024-05-06"/></td>
-        <td>
-            <input type="date"
+          <td align = "left"><input type="date"
                             id="wd-available-untile"
-                            value="2024-05-20"/>
-          </td>
+                            value="2024-05-20"/></td>
+        
         </tr>
+  
+        <tfoot>
+          <tr><td colSpan={3}><hr/></td></tr>
+          <tr>
+            <td colSpan={2}></td>
+            <td align = "right"><button>Cancel</button>
+            <button>Save</button></td>
+          </tr>
+        </tfoot>
+
       </table>
-      <button>Cancel</button>
-      <button>Save</button>
     </div>
 );}
