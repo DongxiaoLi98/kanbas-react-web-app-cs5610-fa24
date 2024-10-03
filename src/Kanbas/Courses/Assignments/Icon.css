@@ -1,0 +1,17 @@
+.input-container{
+    position: relative;
+    display: inline-block;
+}
+
+.input-field{
+    padding-left: 50px;
+    border:solid;
+    background-color: transparent;
+    display: inline-block;
+}
+
+.input-icon{
+    right:5px;
+    top: 8px;
+    position:absolute;
+}
