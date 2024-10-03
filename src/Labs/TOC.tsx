@@ -43,7 +43,7 @@ My GitHub
 </a>
             </li>
             <li className="nav-item">
-                <Link id="wd-github" to="https://github.com/DongxiaoLi98/kanbas-react-web-app-cs5610-fa24/tree/a1">GitHub A1</Link>
+                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-react-web-app-cs5610-fa24/tree/a2" className="nav-link">GitHub A2</a>
             
             </li>
         </ul>
