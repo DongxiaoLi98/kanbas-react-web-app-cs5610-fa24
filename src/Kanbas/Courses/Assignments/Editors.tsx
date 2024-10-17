@@ -1,21 +1,22 @@
 import React from "react";
-import { useParams } from "react-router";
+import { useParams, Link } from "react-router-dom";
 import * as db from "../../Database";
 import { CgCalendarDates } from "react-icons/cg";
 export default function AssignmentEditor() {
-  const { cid} = useParams();
+  const { cid, aid} = useParams();
   const assignments = db.assignments;
+  const assignment = assignments.find((assignment) => assignment._id === aid)
 
+  //console.log(cid)
+  //console.log(aid)
     return (
-      <div id="wd-assignments-editor"   className="container">
-        {assignments.filter((assignment) => assignment._id === cid)
-        .map((assignment) =>(
+      <div id="wd-assignments-editor"  className="container">
           <form>
           <div className="mb-4">
           <label htmlFor="wd-name" className="form-label">Assignment Name</label>
           </div>
           <div className="mb-4">
-          <input id="wd-name" value={assignment.title} className="form-control rounded-0"/>
+          <input id="wd-name" value = {assignment && assignment.title} className="form-control rounded-0"/>
           </div>
 
           <div className="mb-4">
@@ -155,10 +156,13 @@ export default function AssignmentEditor() {
         </div>
         <hr />
         <div >
-          <button className="btn  btn-danger me-1 float-end rounded-0">Save</button>
-          <button className="btn btn-secondary me-1 float-end rounded-0">Cancel</button> 
+          <Link to={`/Kanbas/Courses/${cid}/Assignments`}>
+            <button className="btn  btn-danger me-1 float-end rounded-0">Save</button>
+            <button className="btn btn-secondary me-1 float-end rounded-0">Cancel</button> 
+          </Link>
+            
+          
         </div>
         </form>
-        ))}
         </div>
        );}

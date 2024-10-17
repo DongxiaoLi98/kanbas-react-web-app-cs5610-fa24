@@ -6,7 +6,7 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import AssignmentControl from "./AssignmentControl";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { GiNotebook } from "react-icons/gi";
-import { useParams } from "react-router";
+import { Link, useParams} from "react-router-dom";
 import * as db from "../../Database";
 
 export default function Assignments() {
@@ -41,10 +41,11 @@ export default function Assignments() {
               <GiNotebook className="me-3 fs-3 text-success" />
               </div>
               <div className="col container">
-                    <a className="wd-assignment-link text-black"
-                      href="#/Kanbas/Courses/1234/Assignments/123">
+                    <Link key={assignment._id} to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
+                    className={"wd-assignment-link text-black"}
+                      >
                       {assignment.title}
-                    </a>
+                    </Link>
                 <div>
                   <span style={{color:"red"}}>Multiple Modules</span><span>| <b>Not Avaliable Until</b> May 6 at 12:00am|</span>
                 </div >
@@ -58,82 +59,6 @@ export default function Assignments() {
             </div>
               </li>
             ))}
-
-            {/*
-          <li className="wd-assignment-list-item wd-lesson list-group-item p-3 ps-1">
-            <div className="d-flex">
-              <div>
-                <BsGripVertical className="me-3 fs-3 text-success" />
-              <GiNotebook className="me-3 fs-3 text-success" />
-              </div>
-              
-                <div className="col container">
-                    <a className="wd-assignment-link text-black"
-                      href="#/Kanbas/Courses/1234/Assignments/123">
-                      A1
-                    </a>
-                <div>
-                  <span style={{color:"red"}}>Multiple Modules</span><span>| <b>Not Avaliable Until</b> May 6 at 12:00am|</span>
-                </div >
-              
-              <b>Due</b> May 13 at 11:59pm | 100 pts
-              </div>
-            <div className="float-end me-3">
-              <FaCheckCircle className="text-success me-3"/>
-              <IoEllipsisVertical />
-            </div>
-            </div>
-          </li>
-
-          <li className="wd-assignment-list-item wd-lesson list-group-item p-3 ps-1">
-            <div className="d-flex">
-              <div>
-                <BsGripVertical className="me-3 fs-3 text-success" />
-              <GiNotebook className="me-3 fs-3 text-success" />
-              </div>
-              
-                <div className="col container">
-                    <a className="wd-assignment-link text-black"
-                      href="#/Kanbas/Courses/1234/Assignments/123">
-                      A2
-                    </a>
-                <div>
-                  <span style={{color:"red"}}>Multiple Modules</span><span>| <b>Not Avaliable Until</b> May 13 at 12:00am|</span>
-                </div >
-              
-              <b>Due</b> May 20 at 11:59pm | 100 pts
-              </div>
-            <div className="float-end me-3">
-              <FaCheckCircle className="text-success me-3"/>
-              <IoEllipsisVertical />
-            </div>
-            </div>
-          </li>
-
-          <li className="wd-assignment-list-item wd-lesson list-group-item p-3 ps-1">
-            <div className="d-flex">
-              <div>
-                <BsGripVertical className="me-3 fs-3 text-success" />
-              <GiNotebook className="me-3 fs-3 text-success" />
-              </div>
-              
-                <div className="col container">
-                    <a className="wd-assignment-link text-black"
-                      href="#/Kanbas/Courses/1234/Assignments/123">
-                      A3
-                    </a>
-                <div>
-                  <span style={{color:"red"}}>Multiple Modules</span><span>| <b>Not Avaliable Until</b> May 20 at 12:00am|</span>
-                </div >
-              
-              <b>Due</b> May 27 at 11:59pm | 100 pts
-              </div>
-            <div className="float-end me-3">
-              <FaCheckCircle className="text-success me-3"/>
-              <IoEllipsisVertical />
-            </div>
-            </div>
-          </li>*/}
         </ul>
             </li>
 

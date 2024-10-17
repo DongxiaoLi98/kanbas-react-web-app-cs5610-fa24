@@ -9,7 +9,7 @@ import PeopleTable from "./People/Table";
 import { courses } from "../Database";
 
 export default function Courses() {
-  const { cid } = useParams();
+  const {cid, aid} = useParams();
   const course = courses.find((course) => course._id === cid);
   const { pathname } = useLocation();
 
