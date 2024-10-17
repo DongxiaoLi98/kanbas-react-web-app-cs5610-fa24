@@ -4,8 +4,17 @@ import { IoCalendarOutline } from "react-icons/io5";
 import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
 import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
 
+
 export default function KanbasNavigation() {
   const { pathname } = useLocation();
+  const links = [
+    { label: "Dashboard", path: "/Kanbas/Dashboard", icon: AiOutlineDashboard },
+    { label: "Courses",   path: "/Kanbas/Dashboard", icon: LiaBookSolid },
+    { label: "Calendar",  path: "/Kanbas/Calendar",  icon: IoCalendarOutline },
+    { label: "Inbox",     path: "/Kanbas/Inbox",     icon: FaInbox },
+    { label: "Labs",      path: "/Labs",             icon: LiaCogSolid },
+  ];
+
   return (
     <div id="wd-kanbas-navigation" style={{ width:"105px"}} 
       className="nav list-group rounded-0 position-fixed
@@ -17,11 +26,19 @@ export default function KanbasNavigation() {
       </a>
 
       <Link to="/Kanbas/Account" id="wd-account-link"
-        className = {`nav-link list-group-item text-center border-0
-        ${pathname.includes("/Kanbas/Account") ? "active bg-white text-danger" : "bg-black text-white"}`} >
-          <FaRegCircleUser className = "fs-1 text text-white" /><br/>
+        className = {`list-group-item text-center border-0 bg-black
+        ${pathname.includes("/Kanbas/Account") ? "bg-white text-danger" : "bg-black text-white"}`} >
+          <FaRegCircleUser className = {`fs-1 ${pathname.includes("Account") ? "text-danger" : "text-white"}`}/><br/>
           Account</Link>
-
+      {links.map((link) => (
+        <Link key={link.path} to={link.path} className={`list-group-item bg-black text-center border-0
+              ${pathname.includes(link.label) ? "text-danger bg-white" : "text-white bg-black"}`}>
+          {link.icon({ className: "fs-1 text-danger"})}
+          <br />
+          {link.label}
+        </Link>
+      ))}
+    {/*
       <Link to="/Kanbas/Dashboard" id="wd-dashboard-link"
         className = {`nav-link list-group-item text-center border-0 
         ${pathname.includes("/Kanbas/Dashboard") ? "active bg-white text-danger" : "bg-black text-white"}`}>
@@ -47,6 +64,6 @@ export default function KanbasNavigation() {
       <Link to="/Labs" id="wd-labs-link" 
       className = {`nav-link list-group-item text-center border-0 
         ${pathname.includes("/Labs") ? "active bg-white text-danger" : "bg-black text-white"}`}>
-        <LiaCogSolid className="fs-1 text-danger" /><br/>Labs</Link>
+        <LiaCogSolid className="fs-1 text-danger" /><br/>Labs</Link>*/}
     </div>
 );}

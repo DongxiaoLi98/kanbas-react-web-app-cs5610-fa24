@@ -1,14 +1,21 @@
 import React from "react";
+import { useParams } from "react-router";
+import * as db from "../../Database";
 import { CgCalendarDates } from "react-icons/cg";
 export default function AssignmentEditor() {
+  const { cid} = useParams();
+  const assignments = db.assignments;
+
     return (
       <div id="wd-assignments-editor"   className="container">
-       <form>
+        {assignments.filter((assignment) => assignment._id === cid)
+        .map((assignment) =>(
+          <form>
           <div className="mb-4">
           <label htmlFor="wd-name" className="form-label">Assignment Name</label>
           </div>
           <div className="mb-4">
-          <input id="wd-name" value="A1" className="form-control rounded-0"/>
+          <input id="wd-name" value={assignment.title} className="form-control rounded-0"/>
           </div>
 
           <div className="mb-4">
@@ -144,7 +151,14 @@ export default function AssignmentEditor() {
             </div>
          
           </div></div>
-        </div></div>
-      </form>
-    </div>
-);}
+        </div>
+        </div>
+        <hr />
+        <div >
+          <button className="btn  btn-danger me-1 float-end rounded-0">Save</button>
+          <button className="btn btn-secondary me-1 float-end rounded-0">Cancel</button> 
+        </div>
+        </form>
+        ))}
+        </div>
+       );}
