@@ -19,6 +19,6 @@ export default function Account() {
         <Route path="/Signup" element={<Signup />} />
       </Routes>
       </div></div>
-    </div>
+    </div> 
   );
 }
