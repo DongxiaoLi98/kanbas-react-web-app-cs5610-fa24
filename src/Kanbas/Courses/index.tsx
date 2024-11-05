@@ -6,11 +6,12 @@ import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editors";
 import { FaAlignJustify } from "react-icons/fa";
 import PeopleTable from "./People/Table";
-import { courses } from "../Database";
+import { courses, assignments } from "../Database";
 
-export default function Courses() {
+export default function Courses({ courses }: { courses: any[]; }) {
   const {cid, aid} = useParams();
-  const course = courses.find((course) => course._id === cid);
+  const course = courses.find((course) => course._id === cid); // find course based on the first parameter
+  const assignment = assignments.find((assignment=>assignment._id === aid))
   const { pathname } = useLocation();
 
     return (
@@ -28,7 +29,8 @@ export default function Courses() {
               <Route path="Home" element={<Home />} />
               <Route path="Modules" element={<Modules />} />
               <Route path="Assignments" element={<Assignments />} />
-              <Route path="Assignments/:aid" element={<AssignmentEditor />} />
+              <Route path="Assignments/:aid" element={<AssignmentEditor />} /> {/*Find assignmemnt based on the second parameter*/}
+              {/*<Route path="AssignmentEditor" element={<AssignmentEditor />} />*/}
               <Route path="People" element={<PeopleTable />} />
             </Routes>
             </div></div>

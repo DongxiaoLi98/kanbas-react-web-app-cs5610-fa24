@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router";
+//import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export default function TOC() {
     const { pathname } = useLocation();
@@ -31,6 +31,17 @@ Lab 2
 Lab 3
 </a>
             </li>
+
+            <li className="nav-item">
+                
+                <a id="wd-a4" href="#/Labs/Lab4"
+                    className={`nav-link ${pathname.includes("Lab4") ? "active" : ""}`}>
+                Lab 4
+
+                </a>
+            </li>
+
+
             <li className="nav-item">
             <a id="wd-k" href="#/Kanbas" className="nav-link">
 Kanbas
@@ -46,6 +57,7 @@ My GitHub
                 <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-react-web-app-cs5610-fa24/tree/a3" className="nav-link">GitHub A3</a>
             
             </li>
+
         </ul>
     );
 }

@@ -1,14 +1,27 @@
-import React from "react";
-import { useParams, Link } from "react-router-dom";
-import * as db from "../../Database";
+import React, {useState} from "react";
+import { useParams, Link, useLocation } from "react-router-dom";
+//import * as db from "../../Database";
 import { CgCalendarDates } from "react-icons/cg";
-export default function AssignmentEditor() {
-  const { cid, aid} = useParams();
-  const assignments = db.assignments;
-  const assignment = assignments.find((assignment) => assignment._id === aid)
+import { addAssignment, updateAssignment } from "./reducer";
+import { useSelector, useDispatch} from "react-redux";
 
-  //console.log(cid)
-  //console.log(aid)
+export default function AssignmentEditor() {
+  const dateObjectToHtmlDateString = (date: Date) => {
+    return `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? 0 : ""}${
+      date.getMonth() + 1
+    }-${date.getDate() + 1 < 10 ? 0 : ""}${date.getDate() + 1}`;
+  };
+  const { assignments } = useSelector((state: any) => state.assignmentReducer);
+  const dispatch = useDispatch();
+  const { cid, aid} = useParams();
+  const existAssignment = assignments.find((a:any)=> a._id === aid) ||{}
+  const [title, setAssignmentTitle] = useState(existAssignment.title || "New Title")
+  const [description, setDescription] = useState(existAssignment.description || "New Description")
+  const [points, setPoints] = useState(existAssignment.points || 100)
+  const [dueDate, setDueDate] = useState(existAssignment.due ? new Date(existAssignment.due) : new Date())
+  const [avaliable, setAvaliable] = useState(existAssignment.avaliable ? new Date(existAssignment.avaliable) : new Date())
+  const [until, setUntil] = useState(existAssignment.until ? new Date(existAssignment.until) : new Date())
+
     return (
       <div id="wd-assignments-editor"  className="container">
           <form>
@@ -16,13 +29,16 @@ export default function AssignmentEditor() {
           <label htmlFor="wd-name" className="form-label">Assignment Name</label>
           </div>
           <div className="mb-4">
-          <input id="wd-name" value = {assignment && assignment.title} className="form-control rounded-0"/>
+          
+          <input id="wd-name" defaultValue = {title} className="form-control rounded-0"
+            onChange={(e) => setAssignmentTitle(e.target.value)}/>
           </div>
 
           <div className="mb-4">
-          <textarea id="wd-description" rows={6} className="form-control rounded-0" >
-            The assignment isavailable online  Submit a link to the landing page of your Web application, running on Netlify.
-          </textarea>
+          
+            <textarea id="wd-description" rows={6} className="form-control rounded-0" 
+              defaultValue={description}
+              onChange={(e) => setDescription(e.target.value)}></textarea>
           </div>
 
         <div className="row mb-4">
@@ -30,7 +46,8 @@ export default function AssignmentEditor() {
           <label htmlFor="wd-points"  className="form-label float-end">Points</label>
           </div>
           <div className="col-8">
-          <input id="wd-points" className="form-control rounded-0" value={100} />
+          <input id="wd-points" className="form-control rounded-0" defaultValue={points} 
+            onChange={(e) => setPoints(parseFloat(e.target.value))}/>
           </div>
         </div>
         
@@ -118,10 +135,10 @@ export default function AssignmentEditor() {
           <div className="mb-4">
           <label htmlFor="wd-due-date" className="form-label">Due</label>
           <div className="input-group">
-          <input type="text"
-                            id="wd-due-date"
-                            value="May 13, 2024, 11:59pm" className="form-control"/>
-          <span className="input-group-text"><CgCalendarDates /></span>
+          <input type="date"
+                            id="wd-due-date" defaultValue={dateObjectToHtmlDateString(new Date())}
+                            onChange={(e)=>setDueDate(new Date(e.target.value))} className="form-control"/>
+          
           </div>
           </div>
 
@@ -137,16 +154,18 @@ export default function AssignmentEditor() {
             
             <div className="row">
               <div className="col-4">
-                <div className="input-group"><input type="text"
+                <div className="input-group"><input type="date"
                             id="wd-due-date"
-                            value="May 6, 2024, 12:00am" className="form-control"/>
-                            <span className="input-group-text"><CgCalendarDates /></span> </div>
+                            defaultValue={dateObjectToHtmlDateString(new Date())}
+                            onChange={(e)=>setAvaliable(new Date(e.target.value))}  className="form-control"/>
+                            </div>
              </div>
               <div className="col-4">
                 <div className="input-group">
-                  <input type="text"
-                            id="wd-available-untile"className="form-control"/> 
-                            <span className="input-group-text"><CgCalendarDates /></span> 
+                  <input type="date"
+                            id="wd-available-untile"className="form-control"
+                            defaultValue={dateObjectToHtmlDateString(new Date())}
+                            onChange={(e)=>setUntil(new Date(e.target.value))} /> 
                 </div>
               
             </div>
@@ -157,11 +176,28 @@ export default function AssignmentEditor() {
         <hr />
         <div >
           <Link to={`/Kanbas/Courses/${cid}/Assignments`}>
-            <button className="btn  btn-danger me-1 float-end rounded-0">Save</button>
+
+          { existAssignment._id === aid ? 
+              (<button onClick={()=> 
+                {dispatch(updateAssignment({...existAssignment, title: title, 
+                description: description,
+                points: points,
+                due: dueDate,
+                avaliable: avaliable,
+                until: until,
+                course:cid}));}}
+                className="btn  btn-danger me-1 float-end rounded-0">Save</button>)
+                : (<button onClick={()=> dispatch(addAssignment({...assignments, title: title, 
+                    description: description,
+                    points: points,
+                    due: dueDate,
+                    avaliable: avaliable,
+                    until: until,
+                    course:cid
+                  }))}className="btn  btn-danger me-1 float-end rounded-0">Save</button>)}
+            
             <button className="btn btn-secondary me-1 float-end rounded-0">Cancel</button> 
           </Link>
-            
-          
         </div>
         </form>
         </div>
