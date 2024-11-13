@@ -7,6 +7,7 @@ import AssignmentEditor from "./Assignments/Editors";
 import { FaAlignJustify } from "react-icons/fa";
 import PeopleTable from "./People/Table";
 import { courses, assignments } from "../Database";
+import Quizzes from "./Quizzes";
 
 export default function Courses({ courses }: { courses: any[]; }) {
   const {cid, aid} = useParams();
@@ -32,6 +33,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
               <Route path="Assignments/:aid" element={<AssignmentEditor />} /> {/*Find assignmemnt based on the second parameter*/}
               {/*<Route path="AssignmentEditor" element={<AssignmentEditor />} />*/}
               <Route path="People" element={<PeopleTable />} />
+              <Route path="Quizzes/*" element={<Quizzes />} />
             </Routes>
             </div></div>
       </div>
