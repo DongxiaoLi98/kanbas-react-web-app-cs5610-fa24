@@ -6,11 +6,19 @@ export default function AccountNavigation() {
   const links = currentUser ? ["Profile"] : ["Signin", "Signup"];
 
   const { pathname } = useLocation();
-    return (
-        <div id="wd-account-navigation" className="wd list-group fs-5 rounded-0">
-          <Link to={`/Kanbas/Account/Signin`}  className="list-group-item active border border-0" > Signin  </Link> <br/>
-          <Link to={`/Kanbas/Account/Signup`} className="list-group-item text-danger border border-0"> Signup  </Link> <br/>
-          <Link to={`/Kanbas/Account/Profile`} className="list-group-item text-danger border border-0"> Profile </Link> <br/>
-        </div>
-    
+
+  const isActive = (path: any) => (pathname === path ? "active" : "");
+
+  return (
+      <div id="wd-account-navigation" className="wd list-group fs-5 rounded-0">
+
+          <Link to={`/Kanbas/Account/Signin`}  className={`list-group-item 
+              ${isActive(`/Kanbas/Account/Signin`)} text-danger border border-0`}> Signin  </Link> <br/>
+
+          <Link to={`/Kanbas/Account/Signup`} className={`list-group-item 
+            ${isActive(`/Kanbas/Account/Signup`)} text-danger border border-0`}> Signup  </Link> <br/>
+
+          <Link to={`/Kanbas/Account/Profile`} className={`list-group-item 
+            ${isActive(`/Kanbas/Account/Profile`)} text-danger border border-0`}> Profile </Link> <br/>
+      </div>
 );}

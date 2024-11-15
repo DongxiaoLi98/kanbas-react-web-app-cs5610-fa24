@@ -9,9 +9,10 @@ export default function WorkingWithArraysAsynchronously() {
   const [todos, setTodos] = useState<any[]>([]);
   const [errorMessage, setErrorMessage] = useState(null);
 
+   {/*const Function to read data and Updating data*/}
   const updateTodo = async (todo: any) => {
     try {
-      await client.updateTodo(todo);
+      await client.updateTodo(todo); {/*Invoking constant data from clinet.js from Getting data*/}
       setTodos(todos.map((t) => (t.id === todo.id ? todo : t)));
     } catch (error: any) {
       setErrorMessage(error.response.data.message);
@@ -61,6 +62,7 @@ export default function WorkingWithArraysAsynchronously() {
   return (
     <div id="wd-asynchronous-arrays">
       <h3>Working with Arrays Asynchronously</h3>
+      {errorMessage && (<div id="wd-to-do-error-messgae" className="alert alert-danger mb-2 mt-2">{errorMessage}</div>)}
       <h4>Todos
         <FaPlusCircle onClick={createTodo} className="text-success float-end fs-3"
                          id="wd-create-todo" />

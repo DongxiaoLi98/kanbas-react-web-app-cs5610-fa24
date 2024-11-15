@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import * as db from "./Database";
+//import * as db from "./Database";
 import { useSelector } from "react-redux";
 
 export default function Dashboard({ courses, course, setCourse, addNewCourse,
@@ -13,13 +13,13 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
   const isFaculty = currentUser?.role === "FACULTY";
   const isStudent = currentUser?.role === "STUDENT";
 
-  const [enrollments, setEnrollments] = useState<any[]>(db.enrollments);
+  //const [enrollments, setEnrollments] = useState<any[]>(db.enrollments);
   const [displayAllCourses, setDisplayAllCourses] = useState(true);
   const changeEnrollmentState = () => {
     setDisplayAllCourses(!displayAllCourses);
   };
 
-  const isEnrolled = (courseID:string) => {
+  {/*const isEnrolled = (courseID:string) => {
     return enrollments.some((enrollment)=>enrollment.user === currentUser._id && enrollment.course === courseID);
   }
 
@@ -33,7 +33,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
         (enrollment) => ! (enrollment.user === currentUser._id && enrollment.course === courseID)
     );
     setEnrollments(updateEnrollment)
-  };
+  };*/}
 
   return (
     <div id="wd-dashboard">
@@ -64,12 +64,13 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
       
       <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
-          {courses.filter((course) => displayAllCourses ? true :
-                enrollments.some(
-                  (enrollment) =>
-                    enrollment.user === currentUser._id &&
-                    enrollment.course === course._id
-                  )).map((course) => (
+          {courses
+          //.filter((course) => displayAllCourses ? true :
+                //enrollments.some(
+                 // (enrollment) =>
+                   // enrollment.user === currentUser._id &&
+                   // enrollment.course === course._id))
+              .map((course) => (
             <div className="wd-dashboard-course col" style={{ width: "300px" }}>
               <div className="card rounded-3 overflow-hidden">
                 <Link to={`/Kanbas/Courses/${course._id}/Home`}
@@ -106,11 +107,11 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
                 {isStudent && (
                   <div>
                       <button className="btn btn-primary me-2"> Go </button>
-                    {isEnrolled(course._id) ? (
+                    {/*isEnrolled(course._id) ? (
                       <button className="btn btn-success float-end me-2" id="wd-unenroll-course-click"
                         onClick={(event)=> {event.preventDefault(); handleUnEnroll(course._id)}}> Unenroll </button>):
                    (<button className="btn btn-danger float-end me-2" id="wd-enroll-course-click"
-                    onClick={(event)=> {event.preventDefault(); handleEnroll(course._id)}}> Enroll </button>)}
+                    onClick={(event)=> {event.preventDefault(); handleEnroll(course._id)}}> Enroll </button>)*/}
                       
                   </div>
                 )}
