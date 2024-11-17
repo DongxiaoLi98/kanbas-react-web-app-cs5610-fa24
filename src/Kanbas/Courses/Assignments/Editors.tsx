@@ -1,28 +1,66 @@
 import React, {useState} from "react";
-import { useParams, Link, useLocation } from "react-router-dom";
+import { useParams, Link} from "react-router-dom";
 //import * as db from "../../Database";
-import { CgCalendarDates } from "react-icons/cg";
+//import { CgCalendarDates } from "react-icons/cg";
 import { addAssignment, updateAssignment } from "./reducer";
 import { useSelector, useDispatch} from "react-redux";
+import * as assignmentsClient from "./client";
+import * as courseClient from "../client";
 
 export default function AssignmentEditor() {
+  // function to convert date to string
   const dateObjectToHtmlDateString = (date: Date) => {
     return `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? 0 : ""}${
       date.getMonth() + 1
     }-${date.getDate() + 1 < 10 ? 0 : ""}${date.getDate() + 1}`;
   };
-  const { assignments } = useSelector((state: any) => state.assignmentReducer);
-  const dispatch = useDispatch();
-  const { cid, aid} = useParams();
-  const existAssignment = assignments.find((a:any)=> a._id === aid) ||{}
-  const [title, setAssignmentTitle] = useState(existAssignment.title || "New Title")
-  const [description, setDescription] = useState(existAssignment.description || "New Description")
-  const [points, setPoints] = useState(existAssignment.points || 100)
-  const [dueDate, setDueDate] = useState(existAssignment.due ? new Date(existAssignment.due) : new Date())
-  const [avaliable, setAvaliable] = useState(existAssignment.avaliable ? new Date(existAssignment.avaliable) : new Date())
-  const [until, setUntil] = useState(existAssignment.until ? new Date(existAssignment.until) : new Date())
 
-    return (
+  const dispatch = useDispatch();
+  
+  // get parameter for course and assignment
+  const { cid, aid} = useParams();
+
+  // select all assignments from reducer
+  const { assignments } = useSelector((state: any) => state.assignmentReducer);
+  // check if this assignemtn editor screen is for an exist assignment or new assignment
+  const currentAssignment = assignments.find((a:any)=> a._id === aid) || {}
+
+  const [title, setAssignmentTitle] = useState(currentAssignment.title || "New Title")
+  const [description, setDescription] = useState(currentAssignment.description || "New Description")
+  const [points, setPoints] = useState(currentAssignment.points || 100)
+  const [due, setDueDate] = useState(currentAssignment.due ? new Date(currentAssignment.due) : new Date())
+  const [avaliable, setAvaliable] = useState(currentAssignment.avaliable ? new Date(currentAssignment.avaliable) : new Date())
+  const [until, setUntil] = useState(currentAssignment.until ? new Date(currentAssignment.until) : new Date())
+
+  const saveAssignment = async (assignment: any) => 
+    {await assignmentsClient.updateAssignment(assignment);
+    dispatch(updateAssignment(assignment));
+  }
+
+  const createAssignmentForCourse = async () => {
+    if (!cid) return;
+    const newAssignment = { title: title, course: cid };
+    const assignment = await courseClient.createAssignmentForCourse(cid, newAssignment);
+    dispatch(addAssignment(assignment));
+  };
+
+  const handleSave=() => {
+    if (currentAssignment._id) {
+      saveAssignment({...currentAssignment,
+        title,
+        description,
+        points,
+        due,
+        avaliable,
+        until}
+      );
+    }
+    else {
+      createAssignmentForCourse();
+    }
+  }
+
+  return (
       <div id="wd-assignments-editor"  className="container">
           <form>
           <div className="mb-4">
@@ -136,7 +174,7 @@ export default function AssignmentEditor() {
           <label htmlFor="wd-due-date" className="form-label">Due</label>
           <div className="input-group">
           <input type="date"
-                            id="wd-due-date" defaultValue={dateObjectToHtmlDateString(new Date())}
+                            id="wd-due-date" defaultValue={dateObjectToHtmlDateString(due)}
                             onChange={(e)=>setDueDate(new Date(e.target.value))} className="form-control"/>
           
           </div>
@@ -156,7 +194,7 @@ export default function AssignmentEditor() {
               <div className="col-4">
                 <div className="input-group"><input type="date"
                             id="wd-due-date"
-                            defaultValue={dateObjectToHtmlDateString(new Date())}
+                            defaultValue={dateObjectToHtmlDateString(avaliable)}
                             onChange={(e)=>setAvaliable(new Date(e.target.value))}  className="form-control"/>
                             </div>
              </div>
@@ -164,7 +202,7 @@ export default function AssignmentEditor() {
                 <div className="input-group">
                   <input type="date"
                             id="wd-available-untile"className="form-control"
-                            defaultValue={dateObjectToHtmlDateString(new Date())}
+                            defaultValue={dateObjectToHtmlDateString(until)}
                             onChange={(e)=>setUntil(new Date(e.target.value))} /> 
                 </div>
               
@@ -177,8 +215,7 @@ export default function AssignmentEditor() {
         <div >
           <Link to={`/Kanbas/Courses/${cid}/Assignments`}>
 
-          { existAssignment._id === aid ? 
-              (<button onClick={()=> 
+           {/*(<button onClick={()=> 
                 {dispatch(updateAssignment({...existAssignment, title: title, 
                 description: description,
                 points: points,
@@ -186,7 +223,17 @@ export default function AssignmentEditor() {
                 avaliable: avaliable,
                 until: until,
                 course:cid}));}}
-                className="btn  btn-danger me-1 float-end rounded-0">Save</button>)
+                className="btn  btn-danger me-1 float-end rounded-0">Save</button>)*/}
+
+          {/* existAssignment._id === aid ? <button onClick={()=> 
+                {dispatch(updateAssignment({...existAssignment, title: title, 
+                description: description,
+                points: points,
+                due: dueDate,
+                avaliable: avaliable,
+                until: until,
+                course:cid}));}}
+                className="btn  btn-danger me-1 float-end rounded-0">Save</button>
                 : (<button onClick={()=> dispatch(addAssignment({...assignments, title: title, 
                     description: description,
                     points: points,
@@ -194,7 +241,11 @@ export default function AssignmentEditor() {
                     avaliable: avaliable,
                     until: until,
                     course:cid
-                  }))}className="btn  btn-danger me-1 float-end rounded-0">Save</button>)}
+                  }))}className="btn  btn-danger me-1 float-end rounded-0">Save</button>)*/}
+            
+            <button type="button" 
+                    onClick={handleSave}
+                    className="btn  btn-danger me-1 float-end rounded-0">Save</button>
             
             <button className="btn btn-secondary me-1 float-end rounded-0">Cancel</button> 
           </Link>

@@ -1,13 +1,12 @@
 import { BsPlus } from "react-icons/bs";
-import { IoEllipsisVertical } from "react-icons/io5";
-import { FaCheckCircle, FaCircle } from "react-icons/fa";
+//import { IoEllipsisVertical } from "react-icons/io5";
+//import { FaCheckCircle, FaCircle } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import "./Icon.css"
-import { Link, useLocation, useParams} from "react-router-dom";
-
+import { Link, useParams} from "react-router-dom";
 
 export default function AssignmentControl() {
-    const {cid, aid} = useParams();
+    const {cid} = useParams();
     
     return(
         <div id="wd-modules-controls" className="text-nowrap">

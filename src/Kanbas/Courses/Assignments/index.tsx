@@ -7,22 +7,45 @@ import AssignmentControl from "./AssignmentControl";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { GiNotebook } from "react-icons/gi";
 import { Link, useParams} from "react-router-dom";
-import { useState } from "react";
-import {deleteAssignment}from "./reducer";
+import { useState, useEffect } from "react";
+import {setAssignments, deleteAssignment, editAssignment}from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
+import * as coursesClient from "../client";
+import * as assignmentsClient from "./client";
+
 
 export default function Assignments() {
-  const { cid, aid } = useParams();
+  const {cid} = useParams(); // get course's parameter in order to display all assignment for this specified course
   const dispatch = useDispatch()
-  const { assignments } = useSelector((state: any) => state.assignmentReducer);
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const isFaculty = currentUser?.role === "FACULTY";
+
+  const { assignments } = useSelector((state: any) => state.assignmentReducer); // get initial assignment from reducer, now is []
+  const { currentUser } = useSelector((state: any) => state.accountReducer); // get current user from reducer
+  const isFaculty = currentUser?.role === "FACULTY"; // check the role of current user
+
+  const fetchAssignments = async () => {
+    // requesting data from server 
+    const assignments = await coursesClient.findAssignmentsForCourse(cid as string);
+    dispatch(setAssignments(assignments)); // assign the data to current assignment state in reducer
+  };
+  // display the assignments
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
+
+  // function to display the date as string on screen
   const dateObjectToHtmlDateString = (date: Date) => {
     return `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? 0 : ""}${
       date.getMonth() + 1
     }-${date.getDate() + 1 < 10 ? 0 : ""}${date.getDate() + 1}`;
   };
-  const [selectAssignment, setSelectAssignment] = useState<any>(null)
+
+  // remove assignment
+  const removeAssignment = async (assignmentId: string) => {
+    await assignmentsClient.deleteAssignment(assignmentId);
+    dispatch(deleteAssignment(assignmentId));
+  };
+
+  const [deleteAssignmentId, setDeleteAssignmentId] = useState<any>(null) // initiate delete assignment's id is null
 
   return (
       <div id="wd-assignments" className="container">
@@ -43,7 +66,6 @@ export default function Assignments() {
 
         <ul id="wd-assignment-list"className="wd-lesson list-group rounded-0">
         {assignments
-          .filter((assignment: any) => assignment.course === cid)
           .map((assignment: any) => (
             <li className="wd-assignment-list-item wd-lesson list-group-item p-3 ps-1">
               <div className="d-flex">
@@ -54,22 +76,23 @@ export default function Assignments() {
               <div className="col container">
                     <Link key={assignment._id} to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
                     className={"wd-assignment-link text-black"}
-                      >
+                    onClick={()=>dispatch(editAssignment(assignment._id))}>
                       {assignment.title}
                     </Link>
                 <div>
                   <span style={{color:"red"}}>Multiple Modules</span><span>| <b>Not Avaliable </b>  
-                  {assignment.avaliable? dateObjectToHtmlDateString(new Date(assignment.avaliable)) : "N/A"}|
-                  <b>Until  </b>{assignment.until? dateObjectToHtmlDateString(new Date(assignment.until)) : "N/A"} </span>
+                  {assignment.avaliable? dateObjectToHtmlDateString(new Date(assignment.avaliable)) : dateObjectToHtmlDateString(new Date())}|
+                  <b> Until  </b>{assignment.until? dateObjectToHtmlDateString(new Date(assignment.until)) : dateObjectToHtmlDateString(new Date())} </span>
                 </div >
               
-              <b>Due</b> {assignment.due? dateObjectToHtmlDateString(new Date(assignment.due)) : "N/A"} | {assignment.points} <b> Points</b>
+              <b>Due</b> {assignment.due? dateObjectToHtmlDateString(new Date(assignment.due)) : dateObjectToHtmlDateString(new Date())} 
+              | <b> Points</b> {assignment.points ? assignment.points : 100}
               </div>
 
             <div className="float-end me-3">
             <FaTrash className="text-danger me-2 mb-1"
                 data-bs-toggle="modal" data-bs-target="#wd-delete-assignment-dialog" 
-                onClick={() => {setSelectAssignment(assignment._id)}}/>
+                onClick={() => {setDeleteAssignmentId(assignment._id)}}/> {/*If choose to delete an assignment, update the deleteAssignmentId */}
               <FaCheckCircle className="text-success me-3"/>
               <IoEllipsisVertical />
             </div>
@@ -91,10 +114,10 @@ export default function Assignments() {
                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                   No </button>
                 <button onClick={()=>{
-                  if (selectAssignment) {
-                    dispatch(deleteAssignment(selectAssignment));
+                  if (deleteAssignmentId) {
+                    removeAssignment(deleteAssignmentId);
                   }
-                  setSelectAssignment(null);
+                  setDeleteAssignmentId(null);
                 }} type="button" data-bs-dismiss="modal" className="btn btn-danger">
                   Yes </button>
               </div>
