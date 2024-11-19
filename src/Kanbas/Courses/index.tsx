@@ -6,13 +6,13 @@ import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editors";
 import { FaAlignJustify } from "react-icons/fa";
 import PeopleTable from "./People/Table";
-import { courses, assignments } from "../Database";
+//import { courses, assignments } from "../Database";
 import Quizzes from "./Quizzes";
 
 export default function Courses({ courses }: { courses: any[]; }) {
   const {cid, aid} = useParams();
   const course = courses.find((course) => course._id === cid); // find course based on the first parameter
-  const assignment = assignments.find((assignment=>assignment._id === aid))
+  //const assignment = assignments.find((assignment=>assignment._id === aid))
   const { pathname } = useLocation();
 
     return (
