@@ -17,7 +17,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
   const isFaculty = currentUser?.role === "FACULTY";
   const isStudent = currentUser?.role === "STUDENT";
 
-  const [displayAllCourses, setDisplayAllCourses] = useState(false);
+  const [displayAllCourses, setDisplayAllCourses] = useState(true);
   const [allCourses, setAllCourses] = useState<any[]>([]);
 
   const toogleDisplayView = () => {
