@@ -17,7 +17,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
   const isFaculty = currentUser?.role === "FACULTY";
   const isStudent = currentUser?.role === "STUDENT";
 
-  const [displayAllCourses, setDisplayAllCourses] = useState(true);
+  const [displayAllCourses, setDisplayAllCourses] = useState(false);
   const [allCourses, setAllCourses] = useState<any[]>([]);
 
   const toogleDisplayView = () => {
@@ -50,7 +50,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
           <div>
           <button className="btn btn-primary float-end"
                   id="wd-enroll-new-course-click"
-                  onClick = {toogleDisplayView}> {displayAllCourses? "My Enrollments":"View all courses"} </button>
+                  onClick = {toogleDisplayView}> {displayAllCourses? "My Enrollments":"Click to View all courses for enrollment"} </button>
           <h2 id="wd-dashboard-published">Published Courses ({coursesToDisplay.length})</h2><hr /></div>
         )
       }
