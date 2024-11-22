@@ -63,12 +63,17 @@ My GitHub
 </a>
             </li>
             <li className="nav-item">
-                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-react-web-app-cs5610-fa24/tree/a5" className="nav-link">GitHub A5 React</a>
+                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-react-web-app-cs5610-fa24/tree/a5" className="nav-link">GitHub A5_React_a5</a>
             
             </li>
 
             <li className="nav-item">
-                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-node-server-app/tree/a5" className="nav-link">GitHub A5 Node</a>
+                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-node-server-app/tree/main" className="nav-link">GitHub A5_Node_main</a>
+            
+            </li>
+
+            <li className="nav-item">
+                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-node-server-app/tree/a5" className="nav-link">GitHub A5_Node_a5</a>
             
             </li>
 
