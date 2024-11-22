@@ -68,7 +68,7 @@ My GitHub
             </li>
 
             <li className="nav-item">
-                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-node-server-app/tree/main" className="nav-link">GitHub A5_Node_main</a>
+                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-node-server-app/tree/main" className="nav-link">GitHub NodeLocalEnv</a>
             
             </li>
 
