@@ -59,7 +59,7 @@ Kanbas
             <li className="nav-item">
                 {/*<Link id="wd-github" to="https://github.com/DongxiaoLi98/kanbas-react-web-app-cs5610-fa24">GitHub</Link>*/}
                 <a id="wd-k" href="https://github.com/DongxiaoLi98/kanbas-react-web-app-cs5610-fa24" className="nav-link">
-My GitHub
+GitHubReact
 </a>
             </li>
             <li className="nav-item">
@@ -68,7 +68,7 @@ My GitHub
             </li>
 
             <li className="nav-item">
-                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-node-server-app/tree/main" className="nav-link">GitHub Node</a>
+                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-node-server-app/tree/main" className="nav-link">GitHubNode</a>
             
             </li>
 
