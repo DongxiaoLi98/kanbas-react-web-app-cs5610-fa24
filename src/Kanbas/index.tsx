@@ -13,6 +13,11 @@ import Session from "./Account/Session";
 import * as courseClient from "./Courses/client";
 
 export default function Kanbas() {
+  const addNewCourse = async() => {
+    const newCourse = await userClient.createCourse(course);
+    setCourses([...courses, newCourse]);
+  };
+
   //const [courses, setCourses] = useState<any[]>(db.courses);
   const [courses, setCourses] = useState<any[]>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -25,16 +30,14 @@ export default function Kanbas() {
     }
     setCourses(courses);
   };
+  useEffect(() => {
+    fetchCourses();
+  }, [currentUser]);
 
   const [course, setCourse] = useState<any>({
     _id: "1234", name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
   });
-
-  const addNewCourse = async() => {
-    const newCourse = await userClient.createCourse(course);
-    setCourses([...courses, newCourse]);
-  };
 
   const deleteCourse = async (courseId: any) => {
     const status = await courseClient.deleteCourse(courseId);
@@ -73,10 +76,6 @@ export default function Kanbas() {
       console.error("Error message:", error);
     }
   };
-
-  useEffect(() => {
-    fetchCourses();
-  }, [currentUser]);
 
   return (
     <Session>
