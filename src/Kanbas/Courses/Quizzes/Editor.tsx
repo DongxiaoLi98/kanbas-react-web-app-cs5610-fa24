@@ -22,21 +22,16 @@ export default function QuizzesEditor() {
     // Fetch the quiz based on the course ID and quiz ID from the Redux state
     const quiz = quizzes.find((q: any) => q._id === aid && q.course === cid);
 
-    // Helper function to format dates for "datetime-local" HTML input
-    const formatDateTimeForInput = (date: string | undefined) => {
-        if (!date) return ""; // Handle undefined or empty date
-
-        const dateObj = new Date(date); // Convert string to Date object
-
-        // Extract year, month, day, hours, and minutes
-        const year = dateObj.getFullYear();
-        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const day = String(dateObj.getDate()).padStart(2, '0');
-        const hours = String(dateObj.getHours()).padStart(2, '0');
-        const minutes = String(dateObj.getMinutes()).padStart(2, '0');
-
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    // Date Variables: 
+    // Helper function to convert date to string
+    const dateObjectToHtmlDateString = (date: Date) => {
+        return `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? 0 : ""}${
+        date.getMonth() + 1
+        }-${date.getDate() + 1 < 10 ? 0 : ""}${date.getDate() + 1}`;
     };
+    const [dueDate, setDueDate] = useState(quiz.dueDate ? new Date(quiz.dueDate) : new Date());
+    const [availableFromDate, setAvailableFromDate] = useState(quiz.availableFromDate ? new Date(quiz.availableFromDate) : new Date());
+    const [availableUntilDate, setAvailableUntilDate] = useState(quiz.availableUntilDate ? new Date(quiz.availableUntilDate) : new Date());
 
     // state variables with conditional defaults
     const [isPublished, setIsPublished] = useState<boolean>(quiz.published);
@@ -52,11 +47,9 @@ export default function QuizzesEditor() {
     const [quizWebCam, setQuizWebCam] = useState<boolean>(quiz.webCam);
     const [quizLockQuestionsAfterAnswering, setQuizLockQuestionsAfterAnswering] = useState<boolean>(quiz.lockQuestionsAfterAnswering);
     const [quizAccessCode, setQuizAccessCode] = useState<string>(quiz.accessCode);
-    const [dueDate, setDueDate] = useState<string>(formatDateTimeForInput(quiz.dueDate));
-    const [availableFromDate, setAvailableFromDate] = useState<string>(formatDateTimeForInput(quiz.availableFromDate));
-    const [availableUntilDate, setAvailableUntilDate] = useState<string>(formatDateTimeForInput(quiz.availableUntilDate));
-
+    
     const [activeTab, setActiveTab] = useState<string>("details");
+
 
 
     // Effect to update the active tab when URL hash changes or on initial load
@@ -207,7 +200,7 @@ export default function QuizzesEditor() {
             <ul className="nav nav-tabs mb-4">
                 <li className="nav-item">
                     <button
-                        className={`nav-link ${activeTab === "details" ? "active" : ""}`}
+                        className={`nav-link ${activeTab === "details" ? "active" : "text-danger"}`}
                         onClick={() => handleTabSwitch("details")}
                     >
                         Details
@@ -215,7 +208,7 @@ export default function QuizzesEditor() {
                 </li>
                 <li className="nav-item">
                     <button
-                        className={`nav-link ${activeTab === "questions" ? "active" : ""}`}
+                        className={`nav-link ${activeTab === "questions" ? "active" : "text-danger"}`}
                         onClick={() => handleTabSwitch("questions")}
                     >
                         Questions
@@ -369,18 +362,18 @@ export default function QuizzesEditor() {
                                 </div>
 
                                 <label htmlFor="wd-quiz-due-date" className="form-label fw-bold">Due</label>
-                                <input type="datetime-local" className="form-control mb-2" id="wd-quiz-due-date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+                                <input type="datetime-local" className="form-control mb-2" id="wd-quiz-due-date" defaultValue={dateObjectToHtmlDateString(dueDate)} onChange={(e) => setDueDate(new Date(e.target.value))} />
 
                                 <div className="row">
                                     <div className="col-md-6">
                                         <label htmlFor="wd-quiz-available-from" className="form-label fw-bold">Available From</label>
-                                        <input type="datetime-local" className="form-control" id="wd-quiz-available-from" value={availableFromDate}
-                                            onChange={(e) => setAvailableFromDate(e.target.value)} />
+                                        <input type="datetime-local" className="form-control" id="wd-quiz-available-from" defaultValue={dateObjectToHtmlDateString(availableFromDate)}
+                                            onChange={(e) => setAvailableFromDate(new Date(e.target.value))} />
                                     </div>
                                     <div className="col-md-6">
                                         <label htmlFor="wd-quiz-available-until" className="form-label fw-bold">Until</label>
-                                        <input type="datetime-local" className="form-control" id="wd-quiz-available-until" value={availableUntilDate}
-                                            onChange={(e) => setAvailableUntilDate(e.target.value)} />
+                                        <input type="datetime-local" className="form-control" id="wd-quiz-available-until" defaultValue={dateObjectToHtmlDateString(availableUntilDate)}
+                                            onChange={(e) => setAvailableUntilDate(new Date(e.target.value))} />
 
                                     </div>
                                 </div>
@@ -392,9 +385,9 @@ export default function QuizzesEditor() {
                     {/* Buttons for Cancel, Save, Save and Publish */}
                     <div className="d-flex justify-content-center mt-3">
                         <button type="button" className="btn btn-secondary me-3" onClick={handleCancel}>Cancel</button>
-                        <button type="button" className="btn btn-secondary me-3"
-                            onClick={handleSaveAndPublish}>Save & Publish</button>
-                        <button type="button" className="btn btn-danger me-3" onClick={handleSave}>Save</button>
+                        <button type="button" className="btn btn-danger me-3"
+                            onClick={handleSaveAndPublish}>Save</button>
+                        {/*<button type="button" className="btn btn-danger me-3" onClick={handleSave}>Save</button>*/}
                     </div>
                     <hr />
                 </form>
