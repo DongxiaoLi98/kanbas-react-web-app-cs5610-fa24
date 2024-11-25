@@ -9,6 +9,7 @@ import { addQuiz } from './reducer';
 
 export default function Quizzes() {
     const { cid } = useParams(); // Get the course ID from the URL
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const currentDate = new Date();
@@ -16,6 +17,7 @@ export default function Quizzes() {
 
     // Get quizzes and questions from the store using useSelector with inline type assertion
     const quizzes = useSelector((state) => (state as any).quizzesReducer.quizzes);
+
     const questions = useSelector((state) => (state as any).quizzesReducer.questions);
     const currentUser = useSelector((state) => (state as any).accountReducer.currentUser);
 
@@ -74,7 +76,7 @@ export default function Quizzes() {
         const availableUntilDate = new Date(quiz.availableUntilDate);
 
         if (currentDate < availableFromDate) {
-            return { status: "Not available", isAvailable: false };
+            return {status: "Not Available Until", isAvailable: false };
         } else if (currentDate >= availableFromDate && currentDate <= availableUntilDate) {
             return { status: "Available", isAvailable: true };
         } else {
@@ -134,7 +136,18 @@ export default function Quizzes() {
                                                     <br />
                                                     {/* Availability, Due Date, Points, and Questions Count */}
                                                     <div>
-                                                        <b>{status}</b> | <b>Due </b>
+                                                        {status === "Not Available Until" ?
+                                                            (<><b>{status} </b>
+                                                                {new Date(quiz.availableFromDate).toLocaleDateString("en-US", {
+                                                                        month: 'short',
+                                                                        day: 'numeric',
+                                                                        hour: 'numeric',
+                                                                        minute: 'numeric'
+                                                                    })} </>)
+                                                        : 
+                                                            <b>{status} </b>}
+                                                        |  
+                                                            <b> Due </b>
                                                         {new Date(quiz.dueDate).toLocaleDateString("en-US", {
                                                             month: 'short',
                                                             day: 'numeric',

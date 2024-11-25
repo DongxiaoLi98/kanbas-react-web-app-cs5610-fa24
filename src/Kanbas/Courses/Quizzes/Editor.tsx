@@ -25,7 +25,7 @@ export default function QuizzesEditor() {
     // Date Variables: 
     // Helper function to convert date to string
     const dateObjectToHtmlDateString = (date: Date) => {
-        return `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? 0 : ""}${
+        return `${date.getMonth() + 1 < 10 ? 0 : ""}${
         date.getMonth() + 1
         }-${date.getDate() + 1 < 10 ? 0 : ""}${date.getDate() + 1}`;
     };
@@ -137,6 +137,8 @@ export default function QuizzesEditor() {
 
         // Dispatch the updateQuiz action to save changes to the Redux store
         dispatch(updateQuiz(updatedQuiz));
+        // Navigate back to quiz details after saving
+        navigate(`/Kanbas/Courses/${cid}/Quizzes/${aid}`)
     };
 
     // Save the quiz and set publish status to true
@@ -164,8 +166,8 @@ export default function QuizzesEditor() {
         // Dispatch the updateQuiz action to save changes and mark as published in the Redux store
         dispatch(updateQuiz(updatedQuiz));
 
-        // Navigate back to quiz details after saving
-        navigate(`/Kanbas/Courses/${cid}/Quizzes/${aid}`);
+        // Navigate back to quiz list after saving & publish
+        navigate(`/Kanbas/Courses/${cid}/Quizzes`);
     };
 
     // Cancel changes and navigate back to Quiz List screen
@@ -186,7 +188,7 @@ export default function QuizzesEditor() {
                     </div>
                 ) : (
                     <div onClick={togglePublishStatus} style={{ cursor: "pointer" }}>
-                        <MdDoNotDisturbAlt className="fs-4 me-2" />
+                        <MdDoNotDisturbAlt className="fs-4 me-2 text-danger" />
                         <span className="me-3">Not Published</span>
                     </div>
                 )}
@@ -385,9 +387,9 @@ export default function QuizzesEditor() {
                     {/* Buttons for Cancel, Save, Save and Publish */}
                     <div className="d-flex justify-content-center mt-3">
                         <button type="button" className="btn btn-secondary me-3" onClick={handleCancel}>Cancel</button>
-                        <button type="button" className="btn btn-danger me-3"
-                            onClick={handleSaveAndPublish}>Save</button>
-                        {/*<button type="button" className="btn btn-danger me-3" onClick={handleSave}>Save</button>*/}
+                        <button type="button" className="btn btn-success me-3"
+                            onClick={handleSaveAndPublish}>Save & Published</button>
+                        <button type="button" className="btn btn-danger me-3" onClick={handleSave}>Save</button>
                     </div>
                     <hr />
                 </form>
