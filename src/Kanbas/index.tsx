@@ -13,37 +13,45 @@ import Session from "./Account/Session";
 import * as courseClient from "./Courses/client";
 
 export default function Kanbas() {
+  // current courses are an empty list []
+  const [courses, setCourses] = useState<any[]>([]);
+  // current course is an object with default properties
+  const [course, setCourse] = useState<any>({
+    _id: "1234", name: "New Course", number: "New Number",
+    startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
+  });
+
+  // Function to add New Course, send request to server, add new courses to [courses list]
   const addNewCourse = async() => {
     const newCourse = await userClient.createCourse(course);
     setCourses([...courses, newCourse]);
   };
 
-  //const [courses, setCourses] = useState<any[]>(db.courses);
-  const [courses, setCourses] = useState<any[]>([]);
+  // get current from accountReducer, the user is updated by setCurrentUser when signin
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  // get all courses for that user
   const fetchCourses = async () => {
     let courses = [];
     try {
+      // send request to server, and find all courses from api
       courses = await userClient.findMyCourses();
     } catch (error) {
       console.error(error);
     }
     setCourses(courses);
   };
+  // when current user signin, 
   useEffect(() => {
     fetchCourses();
   }, [currentUser]);
 
-  const [course, setCourse] = useState<any>({
-    _id: "1234", name: "New Course", number: "New Number",
-    startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
-  });
-
+  // Function to delete course
   const deleteCourse = async (courseId: any) => {
     const status = await courseClient.deleteCourse(courseId);
     setCourses(courses.filter((course) => course._id !== courseId));
   };
 
+  // Function to update course
   const updateCourse =async() => {
     await courseClient.updateCourse(course);
     setCourses(
@@ -57,6 +65,7 @@ export default function Kanbas() {
     );
   };
 
+  // Function to enroll to course
   const handleEnroll = async(courseId: string) => {
     try {
       await userClient.enrolleCourse(courseId);
@@ -67,6 +76,7 @@ export default function Kanbas() {
     }
   };
 
+  // Function to unenroll from course
   const handleUnEnroll = async(courseId: string) => {
     try {
       await userClient.unEnrolleCourse(courseId);

@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "./GreenCheckmark";
-import GrayCheckmark from "./GrayCheckmark";
+import UnpublishedMark from "./UnpublishedMark";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deleteQuiz, updateQuiz, addQuiz } from "./reducer";
+import { courses } from "../../Database";
 
 // Define the type for the component props
 interface SingleQuizButtonsProps {
-  isAvailable: boolean;
+  isPublished: boolean;
   quizId: string;
 }
 
-export default function SingleQuizButtons({ isAvailable, quizId }: SingleQuizButtonsProps) {
+export default function SingleQuizButtons({ isPublished, quizId}: SingleQuizButtonsProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -48,21 +49,25 @@ export default function SingleQuizButtons({ isAvailable, quizId }: SingleQuizBut
   };
 
   // Handle the "Copy" action
+  const [targetCourseId, setTargetCourseId] = useState("");
   const handleCopy = () => {
-    if (quiz) {
+    if (quiz && targetCourseId) {
       const newQuiz = {
         ...quiz,
         _id: new Date().getTime().toString(), // Generate a new unique ID
+        course: targetCourseId,
         title: `${quiz.title} (Copy)`,
       };
       dispatch(addQuiz(newQuiz));
+      alert(`Quiz copied to Course Id: ${targetCourseId}`);
     }
   };
 
   return (
     <div className="float-end position-relative">
       {/* Conditionally render the checkmark based on availability */}
-      {isAvailable ? <GreenCheckmark /> : <GrayCheckmark />}
+      {/*isAvailable ? <GreenCheckmark /> : <GrayCheckmark />*/}
+      {isPublished ? <GreenCheckmark /> : <UnpublishedMark />}
 
       {/* Dropdown Trigger */}
       <IoEllipsisVertical
@@ -83,14 +88,50 @@ export default function SingleQuizButtons({ isAvailable, quizId }: SingleQuizBut
           <li className="dropdown-item" onClick={handleTogglePublish}>
             {quiz?.published ? "Unpublish" : "Publish"}
           </li>
-          <li className="dropdown-item" onClick={handleCopy}>
+          <li className="dropdown-item"
+              data-bs-toggle="modal" data-bs-target="#wd-copy-quizzes-dialog">
             Copy
           </li>
-          <li className="dropdown-item" onClick={() => alert("Sort clicked")}>
+          <li className="dropdown-item" 
+            data-bs-toggle="modal" data-bs-target="#wd-sort-quizzes-dialog">
             Sort
           </li>
         </ul>
       )}
+
+        <div id="wd-copy-quizzes-dialog" className="modal fade" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel">
+                                Copy Quiz </h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div className="modal-footer">
+                          <label htmlFor="selectCourses"> Select Target Courses: </label>
+                          <select id="selectCourses" className="form-select" value={targetCourseId}
+                                  onChange={(e)=>setTargetCourseId(e.target.value)}>
+                            <option value="">Select the Course Id</option>
+                            {courses.map((course : any) => (
+                              <option key={course._id} value={course._id}>
+                                {course.name} (ID: {course._id})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-danger" data-bs-dismiss="modal">
+                                Cancel 
+                            </button>
+                            <button type="button" className="btn btn-success" data-bs-dismiss="modal"
+                                onClick = {handleCopy}
+                                disabled={!targetCourseId}>
+                                Copy 
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
   );
 }
