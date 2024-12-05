@@ -53,7 +53,7 @@ return (
     <button onClick={createUser} className="float-end btn btn-danger wd-add-people">
         <FaPlus className="me-2" />
         Users
-      </button>
+    </button>
 
     <h3>Users</h3>
     <input onChange={(e) => filterUsersByName(e.target.value)} placeholder="Search people"
