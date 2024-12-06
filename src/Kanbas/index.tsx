@@ -12,6 +12,7 @@ import ProtectedRoute from "./Account/ProtectedRoute";
 import Session from "./Account/Session";
 import * as courseClient from "./Courses/client";
 
+
 export default function Kanbas() {
   // current courses are an empty list []
   const [courses, setCourses] = useState<any[]>([]);
@@ -21,9 +22,16 @@ export default function Kanbas() {
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
   });
 
+  // Function to delete course
+  const deleteCourse = async (courseId: string) => {
+    const status = await courseClient.deleteCourse(courseId);
+    setCourses(courses.filter((course) => course._id !== courseId));
+  }; 
+
   // Function to add New Course, send request to server, add new courses to [courses list]
   const addNewCourse = async() => {
-    const newCourse = await userClient.createCourse(course);
+    //const newCourse = await userClient.createCourse(course);
+    const newCourse = await courseClient.createCourse(course);
     setCourses([...courses, newCourse]);
   };
 
@@ -31,25 +39,19 @@ export default function Kanbas() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   // get all courses for that user
   const fetchCourses = async () => {
-    let courses = [];
+    //let courses = [];
     try {
       // send request to server, and find all courses from api
-      courses = await userClient.findMyCourses();
+      const courses = await courseClient.fetchAllCourses();
+      setCourses(courses);
     } catch (error) {
       console.error(error);
     }
-    setCourses(courses);
   };
   // when current user signin, 
   useEffect(() => {
     fetchCourses();
   }, [currentUser]);
-
-  // Function to delete course
-  const deleteCourse = async (courseId: any) => {
-    const status = await courseClient.deleteCourse(courseId);
-    setCourses(courses.filter((course) => course._id !== courseId));
-  };
 
   // Function to update course
   const updateCourse =async() => {
