@@ -31,6 +31,23 @@ export default function Kanbas() {
      console.error(error);
    }
  };
+ const updateEnrollment = async (courseId: string, enrolled: boolean) => {
+  if (enrolled) {
+    await userClient.enrollIntoCourse(currentUser._id, courseId);
+  } else {
+    await userClient.unenrollFromCourse(currentUser._id, courseId);
+  }
+  setCourses(
+    courses.map((course) => {
+      if (course._id === courseId) {
+        return { ...course, enrolled: enrolled };
+      } else {
+        return course;
+      }
+    })
+  );
+};
+
  const fetchCourses = async () => {
    try {
      const allCourses = await courseClient.fetchAllCourses();
@@ -143,6 +160,7 @@ export default function Kanbas() {
               updateCourse={updateCourse}
               enrolling={enrolling} 
               setEnrolling={setEnrolling}
+              updateEnrollment={updateEnrollment}
               /></ProtectedRoute>
 
           } />
