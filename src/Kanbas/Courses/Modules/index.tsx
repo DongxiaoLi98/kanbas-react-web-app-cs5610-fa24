@@ -14,6 +14,7 @@ import * as modulesClient from "./client";
 
 export default function Modules() {
   const { cid } = useParams();
+  
   //const [modules, setModules] = useState<any[]>(db.modules);
   const [moduleName, setModuleName] = useState("");
   const { modules } = useSelector((state: any) => state.modulesReducer);
@@ -21,7 +22,7 @@ export default function Modules() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const fetchModules = async () => {
     const modules = await coursesClient.findModulesForCourse(cid as string);
-    dispatch(setModules(modules));
+      dispatch(setModules(modules));
   };
   useEffect(() => {
     fetchModules();
