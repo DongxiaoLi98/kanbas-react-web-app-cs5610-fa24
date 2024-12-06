@@ -14,14 +14,30 @@ import * as courseClient from "./Courses/client";
 
 
 export default function Kanbas() {
+  // get current from accountReducer, the user is updated by setCurrentUser when signin
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  console.log(currentUser)
+  //console.log(currentUser._id)
+ 
   // current courses are an empty list []
   const [courses, setCourses] = useState<any[]>([]);
+  
   // current course is an object with default properties
   const [course, setCourse] = useState<any>({
     _id: "1234", name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
   });
 
+  const findCoursesForUser = async () => {
+    try {
+      const courses = await userClient.findCoursesForUser(currentUser._id);
+      console.log(currentUser._id)
+      setCourses(courses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+ 
   // Function to delete course
   const deleteCourse = async (courseId: string) => {
     const status = await courseClient.deleteCourse(courseId);
@@ -35,8 +51,6 @@ export default function Kanbas() {
     setCourses([...courses, newCourse]);
   };
 
-  // get current from accountReducer, the user is updated by setCurrentUser when signin
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
   // get all courses for that user
   const fetchCourses = async () => {
     //let courses = [];
@@ -50,7 +64,7 @@ export default function Kanbas() {
   };
   // when current user signin, 
   useEffect(() => {
-    fetchCourses();
+    findCoursesForUser();
   }, [currentUser]);
 
   // Function to update course
