@@ -5,13 +5,12 @@ import * as userClient from "./Account/client";
 import * as courseClient from "./Courses/client"
 
 export default function Dashboard({ courses, course, setCourse, addNewCourse,
-  deleteCourse, updateCourse, enrolling, setEnrolling, updateEnrollment}: {
+  deleteCourse, updateCourse, enrolling, setEnrolling}: {
   courses: any[]; course: any; setCourse: (course: any) => void;
   addNewCourse: () => void; deleteCourse: (course: any) => void;
   updateCourse: () => void;
   enrolling: boolean; 
   setEnrolling: (enrolling: boolean) => void;
-  updateEnrollment: (courseId: string, enrolled: boolean) => void;
 }) {
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -40,7 +39,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
     {fetchAllCourses();}
   }, [currentUser]);
 
-  const enrolleCourseIds = courses.map((course) => course._id);
+  //const enrolleCourseIds = courses.map((course) => course._id);
   const coursesToDisplay = displayAllCourses ? allCourses : courses;
 
   return (
@@ -89,10 +88,6 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
                     <h5 className="wd-dashboard-course-title card-title">
                     {enrolling && (
                       <button  
-                        onClick={(event) => {
-                          event.preventDefault();
-                          updateEnrollment(course._id, !course.enrolled);
-                        }}
                         className={`btn ${ course.enrolled ? "btn-danger" : "btn-success" } float-end`} >
 
                           {course.enrolled ? "Unenroll" : "Enroll"}

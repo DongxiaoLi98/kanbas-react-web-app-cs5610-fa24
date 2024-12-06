@@ -14,14 +14,17 @@ import * as courseClient from "./Courses/client";
 
 
 export default function Kanbas() {
-  // current courses are an empty list []
-  const [courses, setCourses] = useState<any[]>([]);
+  
   // current course is an object with default properties
   const [course, setCourse] = useState<any>({
     _id: "1234", name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
   });
 
+  // get current from accountReducer, the user is updated by setCurrentUser when signin
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  // current courses are an empty list []
+  const [courses, setCourses] = useState<any[]>([]);
   const [enrolling, setEnrolling] = useState<boolean>(false);
   const findCoursesForUser = async () => {
    try {
@@ -31,7 +34,8 @@ export default function Kanbas() {
      console.error(error);
    }
  };
- const updateEnrollment = async (courseId: string, enrolled: boolean) => {
+
+ {/*const updateEnrollment = async (courseId: string, enrolled: boolean) => {
   if (enrolled) {
     await userClient.enrollIntoCourse(currentUser._id, courseId);
   } else {
@@ -46,26 +50,27 @@ export default function Kanbas() {
       }
     })
   );
+};*/}
+
+const fetchCourses = async () => {
+  try {
+    const allCourses = await courseClient.fetchAllCourses();
+    const enrolledCourses = await userClient.findCoursesForUser(
+      currentUser._id
+    );
+    const courses = allCourses.map((course: any) => {
+      if (enrolledCourses.find((c: any) => c._id === course._id)) {
+        return { ...course, enrolled: true };
+      } else {
+        return course;
+      }
+    });
+    setCourses(courses);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
- const fetchCourses = async () => {
-   try {
-     const allCourses = await courseClient.fetchAllCourses();
-     const enrolledCourses = await userClient.findCoursesForUser(
-       currentUser._id
-     );
-     const courses = allCourses.map((course: any) => {
-       if (enrolledCourses.find((c: any) => c._id === course._id)) {
-         return { ...course, enrolled: true };
-       } else {
-         return course;
-       }
-     });
-     setCourses(courses);
-   } catch (error) {
-     console.error(error);
-   }
- };
 
 
   // Function to delete course
@@ -81,8 +86,6 @@ export default function Kanbas() {
     setCourses([...courses, newCourse]);
   };
 
-  // get current from accountReducer, the user is updated by setCurrentUser when signin
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
   useEffect(() => {
     if (enrolling) {
       fetchCourses();
@@ -121,7 +124,7 @@ export default function Kanbas() {
     );
   };
 
-  // Function to enroll to course
+  {/*// Function to enroll to course
   const handleEnroll = async(courseId: string) => {
     try {
       await userClient.enrolleCourse(courseId);
@@ -141,7 +144,7 @@ export default function Kanbas() {
     }catch (error) {
       console.error("Error message:", error);
     }
-  };
+  };*/}
 
   return (
     <Session>
@@ -160,7 +163,6 @@ export default function Kanbas() {
               updateCourse={updateCourse}
               enrolling={enrolling} 
               setEnrolling={setEnrolling}
-              updateEnrollment={updateEnrollment}
               /></ProtectedRoute>
 
           } />
