@@ -5,12 +5,12 @@ import * as userClient from "./Account/client";
 import * as courseClient from "./Courses/client"
 
 export default function Dashboard({ courses, course, setCourse, addNewCourse,
-  deleteCourse, updateCourse, handleEnroll, handleUnEnroll}: {
+  deleteCourse, updateCourse, enrolling, setEnrolling}: {
   courses: any[]; course: any; setCourse: (course: any) => void;
   addNewCourse: () => void; deleteCourse: (course: any) => void;
   updateCourse: () => void;
-  handleEnroll: (courseId: string)=>void;
-  handleUnEnroll: (courseId: string)=>void;
+  enrolling: boolean; 
+  setEnrolling: (enrolling: boolean) => void;
 }) {
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -44,7 +44,11 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
 
   return (
     <div id="wd-dashboard">
-      <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
+      <h1 id="wd-dashboard-title">Dashboard
+        <button onClick={() => setEnrolling(!enrolling)} className="float-end btn btn-primary" >
+            {enrolling ? "My Courses" : "All Courses"}
+        </button>
+      </h1> <hr />
       {
         isStudent && (
           <div>
@@ -82,12 +86,20 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
                   <img src={course.image} width="100%" height={160} />
                   <div className="card-body">
                     <h5 className="wd-dashboard-course-title card-title">
+                    {enrolling && (
+                      <button className={`btn ${ course.enrolled ? "btn-danger" : "btn-success" } float-end`} >
+                        {course.enrolled ? "Unenroll" : "Enroll"}
+                      </button>
+                    )}
+
                       {course.name} </h5>
                     <p className="wd-dashboard-course-title card-text overflow-y-hidden" style={{ maxHeight: 100 }}>
                       {course.description} </p>
 
                    {isFaculty && ( 
                     <div>
+                      <hr />
+                      <h5> Below is for faculty </h5>
                       <button className="btn btn-primary"> Go </button>
                       <button onClick={(event) => {
                       event.preventDefault();
@@ -111,12 +123,12 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
                 {isStudent && (
                   <div>
                       <button className="btn btn-primary me-2"> Go </button>
-                    {enrolleCourseIds.includes(course._id) ? 
+                    {/*enrolleCourseIds.includes(course._id) ? 
                      ( <button className="btn btn-success float-end me-2" id="wd-unenroll-course-click"
                         onClick={(event)=> {event.preventDefault(); handleUnEnroll(course._id)}}> Unenroll </button>)
                         :
                       (<button className="btn btn-danger float-end me-2" id="wd-enroll-course-click"
-                    onClick={(event)=> {event.preventDefault(); handleEnroll(course._id)}}> Enroll </button>)}
+                    onClick={(event)=> {event.preventDefault(); handleEnroll(course._id)}}> Enroll </button>)*/}
                       
                   </div>
                 )}
