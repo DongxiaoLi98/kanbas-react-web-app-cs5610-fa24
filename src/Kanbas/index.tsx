@@ -12,44 +12,48 @@ import ProtectedRoute from "./Account/ProtectedRoute";
 import Session from "./Account/Session";
 import * as courseClient from "./Courses/client";
 
-
 export default function Kanbas() {
-  // get current from accountReducer, the user is updated by setCurrentUser when signin
+  // get currentUser from accountReducer, the user is updated by setCurrentUser when signin
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  console.log(currentUser)
-  //console.log(currentUser._id)
+  console.log(currentUser) // check in console
  
   // current courses are an empty list []
   const [courses, setCourses] = useState<any[]>([]);
   
-  // current course is an object with default properties
+  // signle course is an object with default properties
   const [course, setCourse] = useState<any>({
     _id: "1234", name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
   });
 
+  // handle enrolling status
   const [enrolling, setEnrolling] = useState<boolean>(false);
 
+  // find courses for logged in users
   const findCoursesForUser = async () => {
     try {
-      const courses = await userClient.findCoursesForUser(currentUser._id);
-      console.log(`The upload id is: ${currentUser._id}`)
-      setCourses(courses);
-      console.log(courses)
+      // find current user's courses
+      const courses = await userClient.findCoursesForUser(currentUser._id); // fuction from Account/client.ts
+      console.log(`The upload id is: ${currentUser._id}`) // check in console
+      setCourses(courses); // set courses list
+      console.log(courses); // check in console
     } catch (error) {
       console.error(error);
     }
   };
+
+  // handle enrollment status
   const updateEnrollment = async (courseId: string, enrolled: boolean) => {
     if (enrolled) {
-      await userClient.enrollIntoCourse(currentUser._id, courseId);
+      await userClient.enrollIntoCourse(currentUser._id, courseId); // fuction from Account/client.ts
     } else {
-      await userClient.unenrollFromCourse(currentUser._id, courseId);
+      await userClient.unenrollFromCourse(currentUser._id, courseId); // fuction from Account/client.ts
     }
     setCourses(
       courses.map((course) => {
+        // find course matches input courseId
         if (course._id === courseId) {
-          return { ...course, enrolled: enrolled };
+          return { ...course, enrolled: enrolled }; // update enrollment status
         } else {
           return course;
         }
@@ -57,20 +61,24 @@ export default function Kanbas() {
     );
   };
   
-  {/* Enroll */}
+  // fetch courses
   const fetchCourses = async () => {
     try {
-      const allCourses = await courseClient.fetchAllCourses();
-      const enrolledCourses = await userClient.findCoursesForUser(
-        currentUser._id
-      );
+      // get all courses, no matter who use is
+      const allCourses = await courseClient.fetchAllCourses(); // fuction from Courses/client.ts
+      // get current user's courses
+      const enrolledCourses = await userClient.findCoursesForUser(currentUser._id); // fuction from Account/client.ts
+
+      // find from all courses, check if current user enrolled in the courses
       const courses = allCourses.map((course: any) => {
         if (enrolledCourses.find((c: any) => c._id === course._id)) {
-          return { ...course, enrolled: true };
+          return { ...course, enrolled: true }; // if enrolled, update the enrollment status
         } else {
           return course;
         }
       });
+
+      // set courses <--- enrolled courses
       setCourses(courses);
     } catch (error) {
       console.error(error);
@@ -80,7 +88,7 @@ export default function Kanbas() {
   // Function to delete course
   const deleteCourse = async (courseId: string) => {
     const status = await courseClient.deleteCourse(courseId);
-    setCourses(courses.filter((course) => course && course._id !== courseId));
+    setCourses(courses.filter((course) => course._id !== courseId));
     //setCourses(courses.filter((course) => course._id !== courseId));
   }; 
 
@@ -91,26 +99,12 @@ export default function Kanbas() {
     setCourses([...courses, newCourse]);
   };
 
-  // get all courses for that user
-  {/*const fetchCourses = async () => {
-    //let courses = [];
-    try {
-      // send request to server, and find all courses from api
-      const courses = await courseClient.fetchAllCourses();
-      setCourses(courses);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  // when current user signin, 
   useEffect(() => {
-    findCoursesForUser();
-  }, [currentUser]);*/}
-  useEffect(() => {
+    // if click button for enrolling
     if (enrolling) {
-      fetchCourses();
+      fetchCourses(); // fetch all courses, with enrolled status
     } else {
-      findCoursesForUser();
+      findCoursesForUser(); // otherwise, only display enrolled courses for current user
     }
   }, [currentUser, enrolling]);
  
@@ -128,28 +122,6 @@ export default function Kanbas() {
     );
   };
 
-  {/*// Function to enroll to course
-  const handleEnroll = async(courseId: string) => {
-    try {
-      await userClient.enrolleCourse(courseId);
-      await fetchCourses();
-      //alert("Enrolled in Class");
-    }catch (error) {
-      console.error("Error message:", error);
-    }
-  };
-
-  // Function to unenroll from course
-  const handleUnEnroll = async(courseId: string) => {
-    try {
-      await userClient.unEnrolleCourse(courseId);
-      await fetchCourses();
-      //alert("Unenrolled in Class");
-    }catch (error) {
-      console.error("Error message:", error);
-    }
-  };
-*/}
   return (
     <Session>
     <div id="wd-kanbas">
@@ -179,3 +151,40 @@ export default function Kanbas() {
     </Session>
   );
 }
+{// get all courses for that user
+  /*const fetchCourses = async () => {
+    //let courses = [];
+    try {
+      // send request to server, and find all courses from api
+      const courses = await courseClient.fetchAllCourses();
+      setCourses(courses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  // when current user signin, 
+  useEffect(() => {
+    findCoursesForUser();
+  }, [currentUser]);*/}
+  {/*// Function to enroll to course
+  const handleEnroll = async(courseId: string) => {
+    try {
+      await userClient.enrolleCourse(courseId);
+      await fetchCourses();
+      //alert("Enrolled in Class");
+    }catch (error) {
+      console.error("Error message:", error);
+    }
+  };
+
+  // Function to unenroll from course
+  const handleUnEnroll = async(courseId: string) => {
+    try {
+      await userClient.unEnrolleCourse(courseId);
+      await fetchCourses();
+      //alert("Unenrolled in Class");
+    }catch (error) {
+      console.error("Error message:", error);
+    }
+  };
+*/}
