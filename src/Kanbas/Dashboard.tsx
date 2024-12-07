@@ -21,7 +21,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
   const [displayAllCourses, setDisplayAllCourses] = useState(false);
   const [allCourses, setAllCourses] = useState<any[]>([]);
 
-  const toogleDisplayView = () => {
+  {/*const toogleDisplayView = () => {
     setDisplayAllCourses(!displayAllCourses);
   };
   
@@ -41,7 +41,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
   }, [currentUser]);
 
   //const enrolleCourseIds = courses.map((course) => course._id);
-  const coursesToDisplay = displayAllCourses ? allCourses : courses;
+  const coursesToDisplay = displayAllCourses ? allCourses : courses;*/}
 
   return (
     <div id="wd-dashboard">
@@ -51,7 +51,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
         </button>
 
         </h1> <hr />
-      {
+      {/*
         isStudent && (
           <div>
           <button className="btn btn-primary float-end"
@@ -59,7 +59,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
                   onClick = {toogleDisplayView}> {displayAllCourses? "My Enrollments":"Click to View all courses for enrollment"} </button>
           <h2 id="wd-dashboard-published">Published Courses ({coursesToDisplay.length})</h2><hr /></div>
         )
-      }
+      */}
 
       {isFaculty && (<div>
         <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
@@ -79,7 +79,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
       
       <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
-          {coursesToDisplay
+          {courses
               .map((course) => (
             <div className="wd-dashboard-course col" style={{ width: "300px" }}>
               <div className="card rounded-3 overflow-hidden">

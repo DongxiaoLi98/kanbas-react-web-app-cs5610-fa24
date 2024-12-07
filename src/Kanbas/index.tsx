@@ -35,6 +35,7 @@ export default function Kanbas() {
       const courses = await userClient.findCoursesForUser(currentUser._id);
       console.log(`The upload id is: ${currentUser._id}`)
       setCourses(courses);
+      console.log(courses)
     } catch (error) {
       console.error(error);
     }
@@ -79,7 +80,8 @@ export default function Kanbas() {
   // Function to delete course
   const deleteCourse = async (courseId: string) => {
     const status = await courseClient.deleteCourse(courseId);
-    setCourses(courses.filter((course) => course._id !== courseId));
+    setCourses(courses.filter((course) => course && course._id !== courseId));
+    //setCourses(courses.filter((course) => course._id !== courseId));
   }; 
 
   // Function to add New Course, send request to server, add new courses to [courses list]
@@ -126,7 +128,7 @@ export default function Kanbas() {
     );
   };
 
-  // Function to enroll to course
+  {/*// Function to enroll to course
   const handleEnroll = async(courseId: string) => {
     try {
       await userClient.enrolleCourse(courseId);
@@ -147,7 +149,7 @@ export default function Kanbas() {
       console.error("Error message:", error);
     }
   };
-
+*/}
   return (
     <Session>
     <div id="wd-kanbas">
@@ -167,7 +169,6 @@ export default function Kanbas() {
               setEnrolling={setEnrolling}
               updateEnrollment={updateEnrollment}
               /></ProtectedRoute>
-
           } />
            <Route path="Courses/:cid/*" element={<ProtectedRoute><Courses courses={courses} /></ProtectedRoute> } />
           <Route path="/Calendar" element={<h1>Calendar</h1>} />
