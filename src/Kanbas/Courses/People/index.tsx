@@ -9,7 +9,9 @@ export default function People() {
     console.log(cid);
     const fetchUsers = async (courseID: string) => {
     const users = await courseClient.findUsersForCourse(courseID);
-    setUsers(users);
+    const filteredusers = users.filter((user: any) => user !== null);
+    console.log(filteredusers);
+    setUsers(filteredusers);
     };
     useEffect(() => {
         if (cid){
