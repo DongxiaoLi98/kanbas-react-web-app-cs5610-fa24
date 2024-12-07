@@ -13,6 +13,7 @@ import QuizzesEditor from "./Quizzes/Editor";
 import QuestionEditor from "./Quizzes/QuestionEditor";
 import QuizPreview from "./Quizzes/QuizPreview";
 import QuizResult from "./Quizzes/QuizResult";
+import People from "./People";
 
 export default function Courses({ courses }: { courses: any[]; }) {
   const {cid, aid} = useParams();
@@ -37,6 +38,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
               <Route path="Assignments" element={<Assignments />} />
               <Route path="Assignments/:aid" element={<AssignmentEditor />} /> {/*Find assignmemnt based on the second parameter*/}
               {/*<Route path="AssignmentEditor" element={<AssignmentEditor />} />*/}
+              <Route path="/People" element={<People />} />
               <Route path="People" element={<PeopleTable />} />
               <Route path="Quizzes" element={<Quizzes />} />
               <Route path="Quizzes/:aid" element={<QuizzesDetails />} />
