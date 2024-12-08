@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import MultipleChoiceEditor from "./MultipleChoiceEditor";
 import TrueFalseEditor from "./TrueFalseEditor";
 import FillInBlankEditor from "./FillinBlankEditor";
-import { fetchQuestionById} from "./client";
+import { useSelector, useDispatch } from "react-redux";
+import { updateQuestion } from "./reducer";
 
 // Define the structure of a Question
 type Question = {
@@ -18,48 +19,13 @@ type Question = {
 };
 
 export default function QuestionEditor() {
-    const { aid } = useParams<{ aid: string }>();
-    const [question, setQuestion] = useState<Question | null>(null);
+    const { quiz, aid } = useParams<{ quiz: string; aid: string }>();
+    const dispatch = useDispatch();
 
-    // Fetch the question from the server
-    useEffect(() => {
-        const fetchQuestion = async () => {
-            try {
-                if (aid) {
-                    const fetchedQuestion = await fetchQuestionById(aid);
-                    setQuestion(fetchedQuestion);
-                }
-            } catch (error) {
-                console.error("Failed to fetch question:", error);
-            }
-        };
-
-        fetchQuestion();
-    }, [aid]);
-
-    // Handler for changing question type
-    const handleQuestionTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        if (!question) return;
-        const newType = event.target.value;
-        setQuestion({ ...question, type: newType });
-    };
-
-    // Handler for updating the question title
-    const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!question) return;
-        setQuestion({ ...question, title: event.target.value });
-    };
-
-    // Handler for updating points
-    const handlePointsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!question) return;
-        setQuestion({ ...question, points: parseInt(event.target.value) });
-    };
-
-    // If question is not found, show a message
-    if (!question) {
-        return <div>Question not found!</div>;
-    }
+    // Get the question from Redux state
+    const question = useSelector((state: any) =>
+        state.quizzesReducer.questions.find((q: Question) => q._id === aid && q.quiz === quiz)
+    );
 
     // Normalize the question type for rendering purposes
     const normalizedType = question.type.toLowerCase();
@@ -67,10 +33,31 @@ export default function QuestionEditor() {
         normalizedType === "multiple choice"
             ? "Multiple Choice"
             : normalizedType === "true/false"
-                ? "True/False"
-                : normalizedType === "fill in the blank"
-                    ? "Fill in the Blank"
-                    : "";
+            ? "True/False"
+            : normalizedType === "fill in the blank"
+            ? "Fill in the Blank"
+            : "";
+
+    // Handler for changing question type
+    const handleQuestionTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const newType = event.target.value;
+        dispatch(updateQuestion({ ...question, type: newType }));
+    };
+
+    // Handler for updating the question title
+    const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        dispatch(updateQuestion({ ...question, title: event.target.value }));
+    };
+
+    // Handler for updating points
+    const handlePointsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        dispatch(updateQuestion({ ...question, points: parseInt(event.target.value) }));
+    };
+
+    // If question is not found, show a message
+    if (!question) {
+        return <div>Question not found!</div>;
+    }
 
     return (
         <div className="container mt-5 p-4 border rounded">
@@ -115,9 +102,9 @@ export default function QuestionEditor() {
             <hr />
 
             {/* Render the appropriate editor based on the selected question type */}
-            {questionType === "Multiple Choice" && <MultipleChoiceEditor questionId={question._id} question={question} setQuestion={setQuestion} />}
-            {questionType === "True/False" && <TrueFalseEditor questionId={question._id} question={question} setQuestion={setQuestion}/>}
-            {questionType === "Fill in the Blank" && <FillInBlankEditor question={question} setQuestion={setQuestion} />}
+            {questionType === "Multiple Choice" && <MultipleChoiceEditor questionId={question._id} />}
+            {questionType === "True/False" && <TrueFalseEditor questionId={question._id} />}
+            {questionType === "Fill in the Blank" && <FillInBlankEditor questionId={question._id} />}
         </div>
     );
 }

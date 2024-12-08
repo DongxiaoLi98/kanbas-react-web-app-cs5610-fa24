@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { quizzes as quizzesDB, questions as questionsDB } from "../../Database";
+import {quizzes as quizzesDB, questions as questionsDB} from "../../Database"
+//import { quizzes as quizzesDB, questions as questionsDB } from "../../Database";
+//import quizzes as quizzesDB from "../../Database"
 
 // Define the Answer type
 interface Answer {
@@ -88,9 +90,9 @@ const quizzesSlice = createSlice({
         accessCode: quiz.accessCode || "",
         webCam: quiz.webCam || false,
         lockQuestionsAfterAnswering: quiz.lockQuestionsAfterAnswering || false,
-        availableFromDate: new Date().toISOString().split('T')[0],
-        dueDate: new Date().toISOString().split('T')[0],
-        availableUntilDate: new Date().toISOString().split('T')[0],
+        availableFromDate: quiz.availableFromDate,//new Date().toISOString().split("T")[0],
+        dueDate: quiz.dueDate, //new Date().toISOString().split("T")[0],
+        availableUntilDate: quiz.availableUntilDate//new Date().toISOString().split("T")[0],
       };
       state.quizzes = [...state.quizzes, newQuiz];
     },

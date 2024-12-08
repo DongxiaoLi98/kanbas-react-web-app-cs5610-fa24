@@ -1,55 +1,38 @@
 import React, { useEffect } from "react";
 import QuestionTool from "./questiontool";
 import { ImArrowRight } from "react-icons/im";
-import { updateQuestion, updateQuizPoints } from "./client";
+import { useSelector, useDispatch } from "react-redux";
+import { updateQuestion } from "./reducer";
 import { useParams, useNavigate } from "react-router-dom";
 
 type TrueFalseEditorProps = {
     questionId: string;
-    question: any;
-    setQuestion: React.Dispatch<React.SetStateAction<any>>;
 };
 
-export default function TrueFalseEditor({ questionId, question, setQuestion }: TrueFalseEditorProps) {
+export default function TrueFalseEditor({ questionId }: TrueFalseEditorProps) {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { quiz, cid } = useParams<{ quiz: string; cid: string }>();
 
+    // Retrieve the question from Redux state
+    const question = useSelector((state: any) =>
+        state.quizzesReducer.questions.find((q: any) => q._id === questionId && q.quiz === quiz)
+    );
+
     useEffect(() => {
-        const updateQuestionData = async (updatedQuestion: any) => {
-            try {
-                await updateQuestion(updatedQuestion._id, updatedQuestion);
-                setQuestion(updatedQuestion);
-                await updateQuizPoints(updatedQuestion.quiz); // Update quiz points after updating the question
-            } catch (error) {
-                console.error("Failed to update question:", error);
-            }
-        }
         if (question && question.type === "True/false" && question.choices.length !== 2) {
             // Update the choices to ["True", "False"] if not already set
-            const updatedQuestion = { ...question, choices: ["True", "False"] };
-            updateQuestionData(updatedQuestion);
+            dispatch(updateQuestion({ ...question, choices: ["True", "False"] }));
         }
-    }, [question, setQuestion]);
+    }, [dispatch, question]);
 
     if (!question) {
         return <div>Question not found!</div>;
     }
 
     // Handle marking the correct answer
-    const handleMarkCorrect = async (choice: string) => {
-        const updatedQuestion = { ...question, correctAnswer: choice };
-        await updateQuestionData(updatedQuestion);
-    };
-
-    // Function to update question data both locally and on the server
-    const updateQuestionData = async (updatedQuestion: any) => {
-        try {
-            await updateQuestion(updatedQuestion._id, updatedQuestion);
-            setQuestion(updatedQuestion);
-            await updateQuizPoints(updatedQuestion.quiz); // Update quiz points after updating the question
-        } catch (error) {
-            console.error("Failed to update question:", error);
-        }
+    const handleMarkCorrect = (choice: string) => {
+        dispatch(updateQuestion({ ...question, correctAnswer: choice }));
     };
 
     // Cancel changes and navigate back to Quiz Editor with the Questions tab active
@@ -58,8 +41,8 @@ export default function TrueFalseEditor({ questionId, question, setQuestion }: T
     };
 
     // Update question and navigate back to Quiz Editor with the Questions tab active
-    const handleUpdateQuestion = async () => {
-        await updateQuestionData(question);
+    const handleUpdateQuestion = () => {
+        dispatch(updateQuestion(question));
         navigate(`/Kanbas/Courses/${cid}/Quizzes/${quiz}/edit#questions`);
     };
 
@@ -82,7 +65,7 @@ export default function TrueFalseEditor({ questionId, question, setQuestion }: T
                     rows={5}
                     value={question.question}
                     onChange={(e) =>
-                        setQuestion({ ...question, question: e.target.value })
+                        dispatch(updateQuestion({ ...question, question: e.target.value }))
                     }
                 />
             </div>

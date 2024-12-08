@@ -8,11 +8,11 @@ export default function QuizzesControls({ addNewQuiz }: { addNewQuiz: () => void
 
     return (
         <div id="wd-assignments-controls" className="text-nowrap">
-            <button id="wd-assignment-group" className="btn btn-lg btn-secondary me-1 float-end"
+            <button id="wd-assignment-group" className="btn btn-lg btn-secondary me-1 float-end rounded-0"
                 type="button">
                 <IoEllipsisVertical className="fs-4" style={{ cursor: "pointer" }} />
             </button>
-            <button id="wd-add-assignment-btn" className="btn btn-lg btn-danger me-1 float-end"
+            <button id="wd-add-assignment-btn" className="btn btn-lg btn-danger me-1 float-end rounded-0"
                 onClick={addNewQuiz}>
                 <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
                 Quiz

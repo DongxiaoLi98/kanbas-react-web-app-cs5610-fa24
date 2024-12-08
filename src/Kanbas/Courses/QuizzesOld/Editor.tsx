@@ -7,94 +7,50 @@ import ParagraphTool from "./paragraphtool";
 import QuestionEditorGate from "./QuestionEditorGate";
 import GreenCheckmark from "./GreenCheckmark";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchQuizById, updateQuiz } from "./client";
+import { useSelector, useDispatch } from "react-redux";
+import { updateQuiz } from "./reducer";
 
-// Helper function to format dates for "date" type HTML input
-const dateObjectToHtmlDateString = (date: Date) => {
-    return `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? "0" : ""}${date.getMonth() + 1}-${date.getDate() < 10 ? "0" : ""}${date.getDate()}`;
-};
-
-// Helper function to format dates for saving (without timezone offset issues)
-const formatDateForSave = (date: string | undefined) => {
-    if (!date) return ""; // Handle undefined date
-    const dateObj = new Date(date);
-    return dateObjectToHtmlDateString(dateObj); // Save in "YYYY-MM-DD" format
-};
 
 export default function QuizzesEditor() {
     const { cid, aid } = useParams<{ cid: string; aid: string }>(); // Get the course ID and quiz ID from the URL
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [quiz, setQuiz] = useState<any>(null);
 
-    // Helper function to format dates for "datetime-local" HTML input
-    const formatDateTimeForInput = (date: string | undefined) => {
-        if (!date) return ""; // Handle undefined or empty date
+    // Get quizzes from the Redux store
+    const quizzes = useSelector((state) => (state as any).quizzesReducer.quizzes);
 
-        const dateObj = new Date(date); // Convert string to Date object
-        dateObj.setDate(dateObj.getDate() + 1); // Adjust for date gap issue
+    // Fetch the quiz based on the course ID and quiz ID from the Redux state
+    const quiz = quizzes.find((q: any) => q._id === aid && q.course === cid);
 
-        // Extract year, month, day, hours, and minutes
-        const year = dateObj.getFullYear();
-        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const day = String(dateObj.getDate()).padStart(2, '0');
-        const hours = String(dateObj.getHours()).padStart(2, '0');
-        const minutes = String(dateObj.getMinutes()).padStart(2, '0');
-
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    // Date Variables: 
+    // Helper function to convert date to string
+    const dateObjectToHtmlDateString = (date: Date) => {
+        return `${date.getMonth() + 1 < 10 ? 0 : ""}${
+        date.getMonth() + 1
+        }-${date.getDate() + 1 < 10 ? 0 : ""}${date.getDate() + 1}`;
     };
+    const [dueDate, setDueDate] = useState(quiz.dueDate ? new Date(quiz.dueDate) : new Date());
+    const [availableFromDate, setAvailableFromDate] = useState(quiz.availableFromDate ? new Date(quiz.availableFromDate) : new Date());
+    const [availableUntilDate, setAvailableUntilDate] = useState(quiz.availableUntilDate ? new Date(quiz.availableUntilDate) : new Date());
 
     // state variables with conditional defaults
-    const [isPublished, setIsPublished] = useState<boolean>(false);
-    const [quizTitle, setQuizTitle] = useState<string>("");
-    const [quizDescription, setQuizDescription] = useState<string>("");
-    const [quizType, setQuizType] = useState<string>("Graded Quiz");
-    const [assignmentGroup, setAssignmentGroup] = useState<string>("Quizzes");
-    const [shuffleAnswer, setShuffleAnswer] = useState<boolean>(false);
-    const [timeLimit, setTimeLimit] = useState<string>("20");
-    const [allowMultiAttempts, setAllowMultiAttempts] = useState<boolean>(false);
-    const [quizShowCorrectAnswers, setQuizShowCorrectAnswers] = useState<string>("Immediately");
-    const [quizOneQuestionAtATime, setQuizOneQuestionAtATime] = useState<boolean>(false);
-    const [quizWebCam, setQuizWebCam] = useState<boolean>(false);
-    const [quizLockQuestionsAfterAnswering, setQuizLockQuestionsAfterAnswering] = useState<boolean>(false);
-    const [quizAccessCode, setQuizAccessCode] = useState<string>("");
-    const [dueDate, setDueDate] = useState<string>("");
-    const [availableFromDate, setAvailableFromDate] = useState<string>("");
-    const [availableUntilDate, setAvailableUntilDate] = useState<string>("");
-
+    const [isPublished, setIsPublished] = useState<boolean>(quiz.published);
+    const [quizTitle, setQuizTitle] = useState<string>(quiz.title);
+    const [quizDescription, setQuizDescription] = useState<string>(quiz.description);
+    const [quizType, setQuizType] = useState<string>(quiz.type);
+    const [assignmentGroup, setAssignmentGroup] = useState<string>(quiz.assignmentGroup);
+    const [shuffleAnswer, setShuffleAnswer] = useState<boolean>(quiz.shuffleAnswer);
+    const [timeLimit, setTimeLimit] = useState<string>(quiz.timeLimit);
+    const [allowMultiAttempts, setAllowMultiAttempts] = useState<boolean>(quiz.allowMultiAttempts);
+    const [quizShowCorrectAnswers, setQuizShowCorrectAnswers] = useState<string>(quiz.showCorrectAnswers);
+    const [quizOneQuestionAtATime, setQuizOneQuestionAtATime] = useState<boolean>(quiz.oneQuestionaTime);
+    const [quizWebCam, setQuizWebCam] = useState<boolean>(quiz.webCam);
+    const [quizLockQuestionsAfterAnswering, setQuizLockQuestionsAfterAnswering] = useState<boolean>(quiz.lockQuestionsAfterAnswering);
+    const [quizAccessCode, setQuizAccessCode] = useState<string>(quiz.accessCode);
+    
     const [activeTab, setActiveTab] = useState<string>("details");
 
-    // Fetch the quiz from the backend
-    useEffect(() => {
-        const fetchQuiz = async () => {
-            try {
-                if (aid) {
-                    const fetchedQuiz = await fetchQuizById(aid);
-                    if (fetchedQuiz) {
-                        setQuiz(fetchedQuiz);
-                        setIsPublished(fetchedQuiz.published);
-                        setQuizTitle(fetchedQuiz.title);
-                        setQuizDescription(fetchedQuiz.description);
-                        setQuizType(fetchedQuiz.type);
-                        setAssignmentGroup(fetchedQuiz.assignmentGroup);
-                        setShuffleAnswer(fetchedQuiz.shuffleAnswer);
-                        setTimeLimit(fetchedQuiz.timeLimit);
-                        setAllowMultiAttempts(fetchedQuiz.allowMultiAttempts);
-                        setQuizShowCorrectAnswers(fetchedQuiz.showCorrectAnswers);
-                        setQuizOneQuestionAtATime(fetchedQuiz.oneQuestionaTime);
-                        setQuizWebCam(fetchedQuiz.webCam);
-                        setQuizLockQuestionsAfterAnswering(fetchedQuiz.lockQuestionsAfterAnswering);
-                        setQuizAccessCode(fetchedQuiz.accessCode);
-                        setDueDate(formatDateTimeForInput(fetchedQuiz.dueDate));
-                        setAvailableFromDate(formatDateTimeForInput(fetchedQuiz.availableFromDate));
-                        setAvailableUntilDate(formatDateTimeForInput(fetchedQuiz.availableUntilDate));
-                    }
-                }
-            } catch (error) {
-                console.error("Failed to fetch quiz:", error);
-            }
-        };
-        fetchQuiz();
-    }, [aid]);
+
 
     // Effect to update the active tab when URL hash changes or on initial load
     useEffect(() => {
@@ -144,23 +100,21 @@ export default function QuizzesEditor() {
 
 
     // Toggle publish status
-    const togglePublishStatus = async() => {
-        if (!aid || !quiz) return; // Ensure aid and quiz are defined
+    const togglePublishStatus = () => {
         const updatedStatus = !isPublished;
         setIsPublished(updatedStatus);
 
-        // Update the quiz in the backend
-        try {
-            await updateQuiz(aid, { ...quiz, published: updatedStatus });
-        } catch (error) {
-            console.error("Failed to update quiz publish status:", error);
+        // Dispatch the action to update the quiz in the Redux store
+        if (quiz) {
+            dispatch(updateQuiz({ ...quiz, published: updatedStatus }));
         }
+
+        // Navigate to the Quiz Details screen
+        navigate(`/Kanbas/Courses/${cid}/Quizzes/${aid}`);
     };
 
-    // Save the quiz to the backend
-    const handleSave = async () => {
-        if (!aid || !quiz) return; // Ensure aid and quiz are defined
-
+    // Save the quiz to Redux store
+    const handleSave = () => {
         const updatedQuiz = {
             ...quiz,
             published: isPublished,
@@ -176,21 +130,19 @@ export default function QuizzesEditor() {
             webCam: quizWebCam,
             lockQuestionsAfterAnswering: quizLockQuestionsAfterAnswering,
             accessCode: quizAccessCode,
-            dueDate: formatDateForSave(dueDate),
-            availableFromDate: formatDateForSave(availableFromDate),
-            availableUntilDate: formatDateForSave(availableUntilDate),
+            dueDate: dueDate,
+            availableFromDate: availableFromDate,
+            availableUntilDate: availableUntilDate,
         };
 
-        // send update to server
-        await updateQuiz(aid, updatedQuiz);
-
-        // Navigate back to quiz details after saving 
-        navigate(`/Kanbas/Courses/${cid}/Quizzes/${aid}`);
+        // Dispatch the updateQuiz action to save changes to the Redux store
+        dispatch(updateQuiz(updatedQuiz));
+        // Navigate back to quiz details after saving
+        navigate(`/Kanbas/Courses/${cid}/Quizzes/${aid}`)
     };
 
     // Save the quiz and set publish status to true
-    const handleSaveAndPublish = async () => {
-        if (!aid || !quiz) return; // Ensure aid and quiz are defined
+    const handleSaveAndPublish = () => {
         const updatedQuiz = {
             ...quiz,
             published: true,
@@ -206,17 +158,16 @@ export default function QuizzesEditor() {
             webCam: quizWebCam,
             lockQuestionsAfterAnswering: quizLockQuestionsAfterAnswering,
             accessCode: quizAccessCode,
-            dueDate: formatDateForSave(dueDate),
-            availableFromDate: formatDateForSave(availableFromDate),
-            availableUntilDate: formatDateForSave(availableUntilDate),
+            dueDate: dueDate,
+            availableFromDate: availableFromDate,
+            availableUntilDate: availableUntilDate,
         };
 
-        try {
-            await updateQuiz(aid, updatedQuiz);
-            navigate(`/Kanbas/Courses/${cid}/Quizzes`);
-        } catch (error) {
-            console.error("Failed to save and publish quiz:", error);
-        }
+        // Dispatch the updateQuiz action to save changes and mark as published in the Redux store
+        dispatch(updateQuiz(updatedQuiz));
+
+        // Navigate back to quiz list after saving & publish
+        navigate(`/Kanbas/Courses/${cid}/Quizzes`);
     };
 
     // Cancel changes and navigate back to Quiz List screen
@@ -237,7 +188,7 @@ export default function QuizzesEditor() {
                     </div>
                 ) : (
                     <div onClick={togglePublishStatus} style={{ cursor: "pointer" }}>
-                        <MdDoNotDisturbAlt className="fs-4 me-2" />
+                        <MdDoNotDisturbAlt className="fs-4 me-2 text-danger" />
                         <span className="me-3">Not Published</span>
                     </div>
                 )}
@@ -413,18 +364,18 @@ export default function QuizzesEditor() {
                                 </div>
 
                                 <label htmlFor="wd-quiz-due-date" className="form-label fw-bold">Due</label>
-                                <input type="datetime-local" className="form-control mb-2" id="wd-quiz-due-date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+                                <input type="datetime-local" className="form-control mb-2" id="wd-quiz-due-date" defaultValue={dateObjectToHtmlDateString(dueDate)} onChange={(e) => setDueDate(new Date(e.target.value))} />
 
                                 <div className="row">
                                     <div className="col-md-6">
                                         <label htmlFor="wd-quiz-available-from" className="form-label fw-bold">Available From</label>
-                                        <input type="datetime-local" className="form-control" id="wd-quiz-available-from" value={availableFromDate}
-                                            onChange={(e) => setAvailableFromDate(e.target.value)} />
+                                        <input type="datetime-local" className="form-control" id="wd-quiz-available-from" defaultValue={dateObjectToHtmlDateString(availableFromDate)}
+                                            onChange={(e) => setAvailableFromDate(new Date(e.target.value))} />
                                     </div>
                                     <div className="col-md-6">
                                         <label htmlFor="wd-quiz-available-until" className="form-label fw-bold">Until</label>
-                                        <input type="datetime-local" className="form-control" id="wd-quiz-available-until" value={availableUntilDate}
-                                            onChange={(e) => setAvailableUntilDate(e.target.value)} />
+                                        <input type="datetime-local" className="form-control" id="wd-quiz-available-until" defaultValue={dateObjectToHtmlDateString(availableUntilDate)}
+                                            onChange={(e) => setAvailableUntilDate(new Date(e.target.value))} />
 
                                     </div>
                                 </div>
@@ -436,8 +387,8 @@ export default function QuizzesEditor() {
                     {/* Buttons for Cancel, Save, Save and Publish */}
                     <div className="d-flex justify-content-center mt-3">
                         <button type="button" className="btn btn-secondary me-3" onClick={handleCancel}>Cancel</button>
-                        <button type="button" className="btn btn-secondary me-3"
-                            onClick={handleSaveAndPublish}>Save & Publish</button>
+                        <button type="button" className="btn btn-success me-3"
+                            onClick={handleSaveAndPublish}>Save & Published</button>
                         <button type="button" className="btn btn-danger me-3" onClick={handleSave}>Save</button>
                     </div>
                     <hr />
@@ -449,7 +400,7 @@ export default function QuizzesEditor() {
             {/* Content for the Questions Tab */}
             {activeTab === "questions" && (
                 <div>
-                    <QuestionEditorGate setQuiz={setQuiz}/>
+                    <QuestionEditorGate />
                 </div>
             )}
         </div>

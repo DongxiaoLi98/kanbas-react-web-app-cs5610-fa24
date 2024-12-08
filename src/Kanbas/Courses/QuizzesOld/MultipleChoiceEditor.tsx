@@ -3,60 +3,50 @@ import { FaPlus, FaTrash } from "react-icons/fa";
 import QuestionTool from "./questiontool";
 import { ImArrowRight } from "react-icons/im";
 import { PiPencilLight } from "react-icons/pi";
-import { updateQuestion, updateQuizPoints } from "./client";
+import { useSelector, useDispatch } from "react-redux";
+import { updateQuestion } from "./reducer";
 import { useParams, useNavigate } from "react-router-dom";
 
 type MultipleChoiceEditorProps = {
     questionId: string;
-    question: any;
-    setQuestion: React.Dispatch<React.SetStateAction<any>>;
 };
 
-export default function MultipleChoiceEditor({ questionId, question, setQuestion }: MultipleChoiceEditorProps) {
+export default function MultipleChoiceEditor({ questionId }: MultipleChoiceEditorProps) {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { quiz, cid } = useParams<{ quiz: string; cid: string }>();
+
+    // Get the question from the Redux state
+    const question = useSelector((state: any) =>
+        state.quizzesReducer.questions.find((q: any) => q._id === questionId && q.quiz === quiz)
+    );
 
     if (!question) {
         return <div>Question not found!</div>;
     }
 
     // Update the correct answer based on user interaction
-    const handleMarkCorrect = async (choice: string) => {
-        const updatedQuestion = { ...question, correctAnswer: choice };
-        await updateQuestionData(updatedQuestion);
+    const handleMarkCorrect = (choice: string) => {
+        dispatch(updateQuestion({ ...question, correctAnswer: choice }));
     };
 
     // Handle updating an answer's text
-    const handleUpdateAnswer = async (index: number, newValue: string) => {
+    const handleUpdateAnswer = (index: number, newValue: string) => {
         const updatedChoices = [...question.choices];
         updatedChoices[index] = newValue;
-        const updatedQuestion = { ...question, choices: updatedChoices };
-        await updateQuestionData(updatedQuestion);
+        dispatch(updateQuestion({ ...question, choices: updatedChoices }));
     };
 
     // Handle deleting an answer
-    const handleDeleteAnswer = async (index: number) => {
+    const handleDeleteAnswer = (index: number) => {
         const updatedChoices = question.choices.filter((_: string, i: number) => i !== index);
-        const updatedQuestion = { ...question, choices: updatedChoices };
-        await updateQuestionData(updatedQuestion);
+        dispatch(updateQuestion({ ...question, choices: updatedChoices }));
     };
 
     // Handle adding a new answer
-    const handleAddAnswer = async () => {
+    const handleAddAnswer = () => {
         const updatedChoices = [...question.choices, ""];
-        const updatedQuestion = { ...question, choices: updatedChoices };
-        await updateQuestionData(updatedQuestion);
-    };
-
-    // Function to update question data both locally and on the server
-    const updateQuestionData = async (updatedQuestion: any) => {
-        try {
-            await updateQuestion(updatedQuestion._id, updatedQuestion);
-            setQuestion(updatedQuestion);
-            await updateQuizPoints(updatedQuestion.quiz); // Update quiz points after updating the question
-        } catch (error) {
-            console.error("Failed to update question:", error);
-        }
+        dispatch(updateQuestion({ ...question, choices: updatedChoices }));
     };
 
     // Cancel changes and navigate back to Quiz Editor with the Questions tab active
@@ -65,8 +55,8 @@ export default function MultipleChoiceEditor({ questionId, question, setQuestion
     };
 
     // Update question and navigate back to Quiz Editor with the Questions tab active
-    const handleUpdateQuestion = async () => {
-        await updateQuestionData(question);
+    const handleUpdateQuestion = () => {
+        dispatch(updateQuestion(question));
         navigate(`/Kanbas/Courses/${cid}/Quizzes/${quiz}/edit#questions`);
     };
 
@@ -87,7 +77,7 @@ export default function MultipleChoiceEditor({ questionId, question, setQuestion
                     id="mul-question-text"
                     rows={5}
                     value={question.question}
-                    onChange={(e) => setQuestion({ ...question, question: e.target.value })}
+                    onChange={(e) => dispatch(updateQuestion({ ...question, question: e.target.value }))}
                     placeholder="Enter your question here"
                 />
             </div>

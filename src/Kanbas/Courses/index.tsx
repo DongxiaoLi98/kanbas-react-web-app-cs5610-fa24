@@ -7,11 +7,17 @@ import AssignmentEditor from "./Assignments/Editors";
 import { FaAlignJustify } from "react-icons/fa";
 import PeopleTable from "./People/Table";
 import { courses, assignments } from "../Database";
+//import Quizzes from "./QuizzesOld";
 import Quizzes from "./Quizzes";
-import QuizzesDetails from "./Quizzes/Details";
+//import QuizzesDetails from "./QuizzesOld/Details";
+import QuizzesDetails from "./Quizzes";
+//import QuizzesEditor from "./QuizzesOld/Editor";
 import QuizzesEditor from "./Quizzes/Editor";
+//import QuestionEditor from "./QuizzesOld/QuestionEditor";
 import QuestionEditor from "./Quizzes/QuestionEditor";
+//import QuizPreview from "./QuizzesOld/QuizPreview";
 import QuizPreview from "./Quizzes/QuizPreview";
+//import QuizResult from "./QuizzesOld/QuizResult";
 import QuizResult from "./Quizzes/QuizResult";
 import People from "./People";
 
