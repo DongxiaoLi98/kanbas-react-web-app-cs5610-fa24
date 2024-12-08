@@ -59,26 +59,26 @@ Kanbas
             <li className="nav-item">
                 {/*<Link id="wd-github" to="https://github.com/DongxiaoLi98/kanbas-react-web-app-cs5610-fa24">GitHub</Link>*/}
                 <a id="wd-k" href="https://github.com/DongxiaoLi98/kanbas-react-web-app-cs5610-fa24" className="nav-link">
-GitHubReact
+GitReact
 </a>
             </li>
             <li className="nav-item">
-                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-react-web-app-cs5610-fa24/tree/a6remote" className="nav-link">GitHub A6React</a>
+                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-react-web-app-cs5610-fa24/tree/a6remote" className="nav-link">GitA6React</a>
             
             </li>
 
             <li className="nav-item">
-                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-node-server-app/tree/main" className="nav-link">GitHubNode</a>
+                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-node-server-app/tree/main" className="nav-link">GitNode</a>
             
             </li>
 
             <li className="nav-item">
-                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-node-server-app/tree/a6remote" className="nav-link">GitHub A6Node</a>
+                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-node-server-app/tree/a6remote" className="nav-link">GitA6Node</a>
             
             </li>
 
             <li className="nav-item">
-                <a id="wd-github" href="https://kanbas-node-server-app-a6remote.onrender.com" className="nav-link"> A6 RenderServer</a>
+                <a id="wd-github" href="https://kanbas-node-server-app-a6remote.onrender.com" className="nav-link"> A6RenderServer</a>
             
             </li>
 
