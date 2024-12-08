@@ -63,7 +63,7 @@ GitHubReact
 </a>
             </li>
             <li className="nav-item">
-                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-react-web-app-cs5610-fa24/tree/a6fa24" className="nav-link">GitHub A6React</a>
+                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-react-web-app-cs5610-fa24/tree/a6remote" className="nav-link">GitHub A6React</a>
             
             </li>
 
@@ -73,7 +73,7 @@ GitHubReact
             </li>
 
             <li className="nav-item">
-                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-node-server-app/tree/a6fa24" className="nav-link">GitHub A6Node</a>
+                <a id="wd-github" href="https://github.com/DongxiaoLi98/kanbas-node-server-app/tree/a6remote" className="nav-link">GitHub A6Node</a>
             
             </li>
 
