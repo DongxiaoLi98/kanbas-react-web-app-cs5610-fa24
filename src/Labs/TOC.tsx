@@ -78,7 +78,7 @@ GitHubReact
             </li>
 
             <li className="nav-item">
-                <a id="wd-github" href="https://kanbas-node-server-app-a6-4y24.onrender.com" className="nav-link"> A6 RenderServer</a>
+                <a id="wd-github" href="https://kanbas-node-server-app-a6remote.onrender.com" className="nav-link"> A6 RenderServer</a>
             
             </li>
 

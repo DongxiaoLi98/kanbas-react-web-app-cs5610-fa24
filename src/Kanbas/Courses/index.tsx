@@ -6,7 +6,7 @@ import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editors";
 import { FaAlignJustify } from "react-icons/fa";
 import PeopleTable from "./People/Table";
-import { courses, assignments } from "../Database";
+//import { courses, assignments } from "../Database";
 //import Quizzes from "./QuizzesOld";
 import Quizzes from "./Quizzes";
 //import QuizzesDetails from "./QuizzesOld/Details";
