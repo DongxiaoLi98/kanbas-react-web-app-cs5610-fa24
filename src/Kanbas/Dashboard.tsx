@@ -1,6 +1,9 @@
 //import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { MdAutoFixHigh } from "react-icons/md";
+import { MdClass } from "react-icons/md";
+import { useState } from "react";
 //import * as userClient from "./Account/client";
 //import * as courseClient from "./Courses/client"
 
@@ -15,6 +18,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
 }) {
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const [edit, setEdit] = useState(false);
   const isFaculty = currentUser?.role === "FACULTY";
   const isStudent = currentUser?.role === "STUDENT";
 
@@ -46,8 +50,8 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">
-        Dashboard
-
+        <b> Dashboard  </b>
+        
         <button 
           onClick={() => setEnrolling(!enrolling)} 
           className="float-end btn btn-primary">
@@ -56,35 +60,58 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
 
         </button>
       </h1><hr />
+      <h5>
+        <MdAutoFixHigh className="text-success"/>
+        <b> Before delete </b> 
+        Please make sure you are not enrolled
+      </h5><hr />
 
       {/* Faculty has the ability to create/delete/update courses */}
       {isFaculty && (
         <div>
           {/*<h2 id="wd-dashboard-published"> Enrolled Courses ({courses.length})</h2>*/}
           <h5>
-            New Course
+            <MdClass className="text-danger"/> 
+            <b> Courses... </b>
             <button className="btn btn-primary float-end"
               id="wd-add-new-course-click"
               onClick={addNewCourse}> 
-              Add 
+              Add New Course
             </button>
 
             <button 
               className="btn btn-warning float-end me-2"
               onClick={updateCourse} id="wd-update-course-click">
-              Update 
+              Update Existing Course
             </button>
-          </h5><br />
+          </h5>
+          <br />
 
-          <input 
-            defaultValue={course.name} 
-            className="form-control mb-2"
-            onChange={(e) => setCourse({ ...course, name: e.target.value })}/>
+          {!edit && 
+            <div>
+            <input 
+              defaultValue={course.name} 
+              className="form-control mb-2"
+              onChange={(e) => setCourse({ ...course, name: e.target.value })}/>
 
-          <textarea 
-            defaultValue={course.description} 
-            className="form-control"
-            onChange={(e) => setCourse({ ...course, description: e.target.value })}/>
+            <textarea 
+              defaultValue={course.description} 
+              className="form-control"
+              onChange={(e) => setCourse({ ...course, description: e.target.value })}/>
+            </div>}
+          
+            {edit && 
+            <div>
+            <input 
+              value={course.name} 
+              className="form-control mb-2"
+              onChange={(e) => setCourse({ ...course, name: e.target.value })}/>
+
+            <textarea 
+              value={course.description} 
+              className="form-control"
+              onChange={(e) => setCourse({ ...course, description: e.target.value })}/>
+            </div>}
           <hr />
         </div> )
       }
@@ -98,7 +125,8 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
               <div className="card rounded-3 overflow-hidden">
                 <Link to={`/Kanbas/Courses/${course._id}/Home`}
                       className="wd-dashboard-course-link text-decoration-none text-dark" >
-                  <img src={course.image} width="100%" height={160} />
+                  {/*<img src={course.image} width="100%" height={160} />*/}
+                  <img src="/images/reactjs.jpg" width="100%" height={160} />
                   <div className="card-body">
 
                     <h5 className="wd-dashboard-course-title card-title">
@@ -135,6 +163,7 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
                         onClick={(event) => {
                           event.preventDefault();
                           setCourse(course);
+                          setEdit(true);
                         }}
                         className="btn btn-warning me-2 float-end" >
                         Edit

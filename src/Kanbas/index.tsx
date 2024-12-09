@@ -22,8 +22,8 @@ export default function Kanbas() {
   
   // signle course is an object with default properties
   const [course, setCourse] = useState<any>({
-    _id: "1234", name: "New Course", number: "New Number",
-    startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
+    _id: "1234", name: "New Course Title", number: "New Number",
+    startDate: "2023-09-10", endDate: "2023-12-15", description: "Faculty members will automatically enroll in the new courses.",
   });
 
   // handle enrolling status
