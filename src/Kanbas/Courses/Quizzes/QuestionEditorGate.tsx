@@ -70,6 +70,7 @@ export default function QuestionEditorGate({ setQuiz }: QuestionEditorGateProps)
                 const createdQuestion = await createQuestion(newQuestion);
                 setQuestions((prevQuestions) => [...prevQuestions, createdQuestion]);
                 await updateQuizPoints(newQuestion.quiz);
+
             } catch (error) {
                 console.error("Failed to add question:", error);
             }

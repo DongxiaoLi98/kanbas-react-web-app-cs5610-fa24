@@ -2,17 +2,18 @@ import { useState, useEffect } from "react";
 import { IoEllipsisVertical } from "react-icons/io5";
 import GreenCheckmark from "./GreenCheckmark";
 import GrayCheckmark from "./GrayCheckmark";
+import UnpublishedMark from "./UnpublishedMark";
 import { useNavigate } from "react-router-dom";
 import { fetchQuizById, deleteQuiz, updateQuiz, createQuiz} from "./client";
 
 // Define the type for the component props
 interface SingleQuizButtonsProps {
-  isAvailable: boolean;
+  isPublished: boolean;
   quizId: string;
   onQuizChange: () => void; // Callback to notify parent of changes
 }
 
-export default function SingleQuizButtons({ isAvailable, quizId, onQuizChange }: SingleQuizButtonsProps) {
+export default function SingleQuizButtons({ isPublished, quizId, onQuizChange }: SingleQuizButtonsProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [quiz, setQuiz] = useState<any>(null);
   const navigate = useNavigate();
@@ -86,7 +87,7 @@ export default function SingleQuizButtons({ isAvailable, quizId, onQuizChange }:
   return (
     <div className="float-end position-relative">
       {/* Conditionally render the checkmark based on availability */}
-      {isAvailable? <GreenCheckmark /> : <GrayCheckmark />}
+      {isPublished? <GreenCheckmark /> : <UnpublishedMark />}
 
       {/* Dropdown Trigger */}
       <IoEllipsisVertical
@@ -110,7 +111,11 @@ export default function SingleQuizButtons({ isAvailable, quizId, onQuizChange }:
           <li className="dropdown-item" onClick={handleCopy}>
             Copy
           </li>
-          <li className="dropdown-item" onClick={() => alert("Sort clicked")}>
+         {/* <li className="dropdown-item" onClick={() => alert("Sort clicked")}>
+            Sort
+          </li>*/}
+          <li className="dropdown-item" 
+            data-bs-toggle="modal" data-bs-target="#wd-sort-quizzes-dialog">
             Sort
           </li>
         </ul>

@@ -31,7 +31,7 @@ export const fetchQuizById = async (quizId: string) => {
 // Create a new quiz
 export const createQuiz = async (quiz: any) => {
   try {
-    const response = await axios.post(QUIZZES_API, quiz);
+    const response = await axios.post(`${QUIZZES_API}`, quiz);
     return response.data;
   } catch (error) {
     console.error("Failed to create quiz:", error);
@@ -63,7 +63,7 @@ export const deleteQuiz = async (quizId: string) => {
 // Function to update the points of a specific quiz
 export const updateQuizPoints = async (quizId: string) => {
   try {
-    const response = await axios.put(`${QUIZZES_API}/${quizId}/points`);
+    const response = await axios.put(`${QUIZZES_API}/${quizId}/point`);
     return response.data;
   } catch (error) {
     console.error("Failed to update quiz points:", error);

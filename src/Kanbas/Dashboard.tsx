@@ -60,11 +60,11 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse,
 
         </button>
       </h1><hr />
-      <h5>
+      {/*<h5>
         <MdAutoFixHigh className="text-success"/>
         <b> Before delete </b> 
         Please make sure you are not enrolled
-      </h5><hr />
+      </h5><hr />*/}
 
       {/* Faculty has the ability to create/delete/update courses */}
       {isFaculty && (

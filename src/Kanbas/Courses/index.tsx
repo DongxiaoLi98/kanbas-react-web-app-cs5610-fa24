@@ -10,7 +10,7 @@ import PeopleTable from "./People/Table";
 //import Quizzes from "./QuizzesOld";
 import Quizzes from "./Quizzes";
 //import QuizzesDetails from "./QuizzesOld/Details";
-import QuizzesDetails from "./Quizzes";
+import QuizzesDetails from "./Quizzes/Details";
 //import QuizzesEditor from "./QuizzesOld/Editor";
 import QuizzesEditor from "./Quizzes/Editor";
 //import QuestionEditor from "./QuizzesOld/QuestionEditor";

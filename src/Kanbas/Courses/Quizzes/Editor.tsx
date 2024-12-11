@@ -49,11 +49,12 @@ export default function QuizzesEditor() {
     const [quizDescription, setQuizDescription] = useState<string>("");
     const [quizType, setQuizType] = useState<string>("Graded Quiz");
     const [assignmentGroup, setAssignmentGroup] = useState<string>("Quizzes");
-    const [shuffleAnswer, setShuffleAnswer] = useState<boolean>(false);
+    const [shuffleAnswer, setShuffleAnswer] = useState<boolean>(false);//shuffleAnswer
     const [timeLimit, setTimeLimit] = useState<string>("20");
     const [allowMultiAttempts, setAllowMultiAttempts] = useState<boolean>(false);
+    const [numberofMultiTimes, setNumberofMultipleTimes] = useState<number>(1);
     const [quizShowCorrectAnswers, setQuizShowCorrectAnswers] = useState<string>("Immediately");
-    const [quizOneQuestionAtATime, setQuizOneQuestionAtATime] = useState<boolean>(false);
+    const [quizOneQuestionAtATime, setQuizOneQuestionAtATime] = useState<boolean>(false);//quizOneQuestionAtATime
     const [quizWebCam, setQuizWebCam] = useState<boolean>(false);
     const [quizLockQuestionsAfterAnswering, setQuizLockQuestionsAfterAnswering] = useState<boolean>(false);
     const [quizAccessCode, setQuizAccessCode] = useState<string>("");
@@ -76,11 +77,12 @@ export default function QuizzesEditor() {
                         setQuizDescription(fetchedQuiz.description);
                         setQuizType(fetchedQuiz.type);
                         setAssignmentGroup(fetchedQuiz.assignmentGroup);
-                        setShuffleAnswer(fetchedQuiz.shuffleAnswer);
+                        setShuffleAnswer(fetchedQuiz.shuffleAnswer); //set shuffleAnswer ---> shuffleAnswer
                         setTimeLimit(fetchedQuiz.timeLimit);
                         setAllowMultiAttempts(fetchedQuiz.allowMultiAttempts);
+                        setNumberofMultipleTimes(fetchedQuiz.numberOfAttempts); //update attempt times
                         setQuizShowCorrectAnswers(fetchedQuiz.showCorrectAnswers);
-                        setQuizOneQuestionAtATime(fetchedQuiz.oneQuestionaTime);
+                        setQuizOneQuestionAtATime(fetchedQuiz.oneQuestionaTime); // set oneQuestionaTime ---> quizOneQuestionAtATime
                         setQuizWebCam(fetchedQuiz.webCam);
                         setQuizLockQuestionsAfterAnswering(fetchedQuiz.lockQuestionsAfterAnswering);
                         setQuizAccessCode(fetchedQuiz.accessCode);
@@ -168,11 +170,12 @@ export default function QuizzesEditor() {
             description: quizDescription,
             type: quizType,
             assignmentGroup: assignmentGroup,
-            shuffleAnswer: shuffleAnswer,
+            shuffleAnswer: shuffleAnswer, //update shuffleAnswer
             timeLimit: timeLimit,
             allowMultiAttempts: allowMultiAttempts,
+            numberOfAttempts: numberofMultiTimes,
             showCorrectAnswers: quizShowCorrectAnswers,
-            oneQuestionaTime: quizOneQuestionAtATime,
+            oneQuestionaTime: quizOneQuestionAtATime, // update oneQuestionaTime
             webCam: quizWebCam,
             lockQuestionsAfterAnswering: quizLockQuestionsAfterAnswering,
             accessCode: quizAccessCode,
@@ -201,6 +204,7 @@ export default function QuizzesEditor() {
             shuffleAnswer: shuffleAnswer,
             timeLimit: timeLimit,
             allowMultiAttempts: allowMultiAttempts,
+            numberOfAttempts: numberofMultiTimes,
             showCorrectAnswers: quizShowCorrectAnswers,
             oneQuestionaTime: quizOneQuestionAtATime,
             webCam: quizWebCam,
@@ -369,14 +373,33 @@ export default function QuizzesEditor() {
                                 <input type="checkbox" className="form-check-input ms-1 me-2" id="quiz-multipleAttempts"
                                     checked={allowMultiAttempts} onChange={() => setAllowMultiAttempts(!allowMultiAttempts)} />
                                 <label className="form-check-label" htmlFor="quiz-multipleAttempts">Allow Multiple Attempts</label>
+                                {allowMultiAttempts && 
+                                <div>
+                                    <label htmlFor="maxAttempts" className="form-label">
+                                        Maximum Number of Attempts:
+                                    </label>
+                                    <input
+                                        type="number"
+                                        className="form-control w-25"
+                                        id="maxAttempts"
+                                        min="1"
+                                        value={numberofMultiTimes}
+                                        onChange={(e) => setNumberofMultipleTimes(Number(e.target.value))}
+                                    />
+                                </div>}
                                 <br />
                                 <input type="checkbox" className="form-check-input ms-1 me-2" id="quiz-show-answer"
                                     checked={quizShowCorrectAnswers === "Immediately"}
                                     onChange={(e) => setQuizShowCorrectAnswers(e.target.checked ? "Immediately" : "Never")} />
                                 <label className="form-check-label" htmlFor="quiz-show-answer">Show Correct Answer</label>
                                 <br />
+                                {/*<input type="checkbox" className="form-check-input ms-1 me-2" id="quiz-one-question"
+                                    checked={quizOneQuestionAtATime} onChange={() => setQuizOneQuestionAtATime(!quizOneQuestionAtATime)} />
+                                <label className="form-check-label" htmlFor="quiz-one-question">One Question at a Time</label>
+                                <br />*/}
                                 <input type="checkbox" className="form-check-input ms-1 me-2" id="quiz-one-question"
-                                    checked={quizOneQuestionAtATime} onChange={() => setQuizOneQuestionAtATime(!quiz.oneQuestionaTime)} />
+                                    checked={quizOneQuestionAtATime} 
+                                    onChange={() => setQuizOneQuestionAtATime(!quiz.oneQuestionaTime)} />
                                 <label className="form-check-label" htmlFor="quiz-one-question">One Question at a Time</label>
                                 <br />
                                 <input type="checkbox" className="form-check-input ms-1 me-2" id="quiz-webcam" checked={quizWebCam} onChange={() => setQuizWebCam(!quiz.webCam)} />
@@ -436,14 +459,13 @@ export default function QuizzesEditor() {
                     {/* Buttons for Cancel, Save, Save and Publish */}
                     <div className="d-flex justify-content-center mt-3">
                         <button type="button" className="btn btn-secondary me-3" onClick={handleCancel}>Cancel</button>
-                        <button type="button" className="btn btn-secondary me-3"
+                        <button type="button" className="btn btn-success me-3"
                             onClick={handleSaveAndPublish}>Save & Publish</button>
                         <button type="button" className="btn btn-danger me-3" onClick={handleSave}>Save</button>
                     </div>
                     <hr />
                 </form>
             )}
-
 
 
             {/* Content for the Questions Tab */}
